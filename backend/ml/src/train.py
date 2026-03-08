@@ -18,8 +18,8 @@ def main():
     REPORT.parent.mkdir(parents=True, exist_ok=True)
 
     clf = LogisticRegression(
-    max_iter=2000,
-    solver="lbfgs"
+        max_iter=2000,
+        solver="lbfgs"
 )
     clf.fit(X_train, y_train)
 
