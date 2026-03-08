@@ -12,6 +12,9 @@ class TravelRequest(Base):
     start_date: Mapped[str] = mapped_column(String, nullable=False)  # ISO string for simplicity
     end_date: Mapped[str] = mapped_column(String, nullable=False)
     justification: Mapped[str] = mapped_column(Text, nullable=False)
+
+    packet_pdf_path: Mapped[str | None] = mapped_column(String, nullable=True)
+
     status: Mapped[str] = mapped_column(String, nullable=False, default="draft")  # draft/submitted/returned/approved/denied
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 

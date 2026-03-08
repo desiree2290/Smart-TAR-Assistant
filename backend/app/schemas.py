@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
+from typing import Any
 
 class TravelRequestCreate(BaseModel):
     traveler_name: str
@@ -27,7 +28,7 @@ class AIFlag(BaseModel):
     description: str
 
 class AIReviewOut(BaseModel):
-    summary: List[str]
-    extracted_fields: Dict[str, str]
-    flags: List[AIFlag]
-    questions: List[str]
+    summary: list[str]
+    extracted_fields: dict[str, Any]
+    flags: list[dict[str, Any]]
+    questions: list[str]
