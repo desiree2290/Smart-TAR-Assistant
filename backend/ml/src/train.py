@@ -5,7 +5,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix
 
 ARTIFACTS = Path("ml/data/processed/artifacts.pkl")
-MODEL_PATH = Path("ml/models/model_v1_logreg.pkl")
+MODEL_PATH = Path("app/models/tar_risk_model.joblib")
+FEATURES_PATH = Path("app/models/feature_columns.joblib")
 REPORT = Path("ml/reports/model_report_v1.md")
 
 
@@ -15,6 +16,7 @@ def main():
     X_test, y_test = data["X_test"], data["y_test"]
 
     MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    FEATURES_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
 
     clf = LogisticRegression(
@@ -28,7 +30,8 @@ def main():
     rep = classification_report(y_test, preds, digits=3)
     cm = confusion_matrix(y_test, preds, labels=["approve", "clarify", "hold"])
 
-    joblib.dump({"model": clf, "columns": list(X_train.columns)}, MODEL_PATH)
+    joblib.dump(clf, MODEL_PATH)
+    joblib.dump(list(X_train.columns), FEATURES_PATH)
 
     REPORT.write_text(
         "# Model Report v1 (Logistic Regression)\n\n"

@@ -30,6 +30,11 @@ def main():
     for r in rows:
         scores_by_label[r["label"]].append(r["phase3"]["risk_score"])
 
+        # flag count distribution by label
+    flag_counts_by_label = defaultdict(list)
+    for r in rows:
+        flag_counts_by_label[r["label"]].append(len(r["phase3"]["flags"]))
+
     # Plot: label distribution
     plt.figure()
     plt.bar(label_counts.keys(), label_counts.values())
@@ -43,6 +48,14 @@ def main():
     plt.bar(avg_scores.keys(), avg_scores.values())
     plt.title("Avg Risk Score by Label")
     plt.savefig(FIG_DIR / "avg_score_by_label.png", bbox_inches="tight")
+    plt.close()
+
+        # Plot: average flag count by label
+    avg_flag_counts = {k: sum(v) / max(1, len(v)) for k, v in flag_counts_by_label.items()}
+    plt.figure()
+    plt.bar(avg_flag_counts.keys(), avg_flag_counts.values())
+    plt.title("Avg Flag Count by Label")
+    plt.savefig(FIG_DIR / "avg_flag_count_by_label.png", bbox_inches="tight")
     plt.close()
 
     # Top flag codes overall
@@ -66,6 +79,7 @@ def main():
     md.append("\n## Figures\n")
     md.append("- label_distribution.png\n")
     md.append("- avg_score_by_label.png\n")
+    md.append("- avg_flag_count_by_label.png\n")
 
     REPORT.write_text("".join(md), encoding="utf-8")
     print(f"Wrote {REPORT} and figures to {FIG_DIR}")

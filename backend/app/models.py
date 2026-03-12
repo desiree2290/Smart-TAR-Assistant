@@ -37,9 +37,11 @@ class AIReview(Base):
 
     request_id: Mapped[str] = mapped_column(String, ForeignKey("travel_requests.id"), primary_key=True)
     summary_text: Mapped[str] = mapped_column(Text, nullable=False)
-    extracted_fields_json: Mapped[str] = mapped_column(Text, nullable=False)  # store JSON as string for simplicity
+    extracted_fields_json: Mapped[str] = mapped_column(Text, nullable=False)
     flags_json: Mapped[str] = mapped_column(Text, nullable=False)
     questions_json: Mapped[str] = mapped_column(Text, nullable=False)
+    phase3_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    ml_json: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     request = relationship("TravelRequest", back_populates="review")

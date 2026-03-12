@@ -42,8 +42,15 @@ def build_feature_row(
     codes = [f.get("code", "") for f in flags]
     code_counts = Counter(codes)
 
+    num_high_flags = sum(1 for f in flags if (f.get("severity") or 0) >= 9)
+    num_med_flags = sum(1 for f in flags if (f.get("severity") or 0) == 6)
+    num_low_flags = sum(1 for f in flags if (f.get("severity") or 0) == 3)
+
     feats: Dict[str, Any] = {
         "num_flags": len(flags),
+        "num_high_flags": num_high_flags,
+        "num_med_flags": num_med_flags,
+        "num_low_flags": num_low_flags,
         "trip_length_days": _days_between(
             tar.get("start_date", ""),
             tar.get("end_date", "")

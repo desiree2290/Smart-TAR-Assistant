@@ -46,3 +46,13 @@ export async function getReview(id) {
     if (!res.ok) throw new Error("No review yet");
     return res.json();
 }
+
+export async function runDemoScenario(type) {
+    const res = await fetch(`/api/demo/${type}`, {
+        method: "POST"
+    });
+
+    if (!res.ok) throw new Error("Demo failed");
+
+    return res.json();
+}

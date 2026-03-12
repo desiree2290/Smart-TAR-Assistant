@@ -185,14 +185,18 @@ def submit_request(request_id: str, db: Session = Depends(get_db)):
         review_row.extracted_fields_json = json.dumps(review_result["extracted_fields"])
         review_row.flags_json = json.dumps(review_result["flags"])
         review_row.questions_json = json.dumps(review_result["questions"])
+        review_row.phase3_json = json.dumps(review_result["phase3"])
+        review_row.ml_json = json.dumps(review_result["ml"])
     else:
         db.add(AIReview(
-            request_id=request_id,
-            summary_text=json.dumps(review_result["summary"]),
-            extracted_fields_json=json.dumps(review_result["extracted_fields"]),
-            flags_json=json.dumps(review_result["flags"]),
-            questions_json=json.dumps(review_result["questions"]),
-        ))
+        request_id=request_id,
+        summary_text=json.dumps(review_result["summary"]),
+        extracted_fields_json=json.dumps(review_result["extracted_fields"]),
+        flags_json=json.dumps(review_result["flags"]),
+        questions_json=json.dumps(review_result["questions"]),
+        phase3_json=json.dumps(review_result["phase3"]),
+        ml_json=json.dumps(review_result["ml"]),
+    ))
 
     db.commit()
     return {"ok": True, "status": "submitted"}
@@ -215,8 +219,10 @@ def get_review(request_id: str, db: Session = Depends(get_db)):
             )
 
     return AIReviewOut(
-        summary=safe_load("summary_text", row.summary_text),
-        extracted_fields=safe_load("extracted_fields_json", row.extracted_fields_json),
-        flags=safe_load("flags_json", row.flags_json),
-        questions=safe_load("questions_json", row.questions_json),
-    )
+    summary=safe_load("summary_text", row.summary_text),
+    extracted_fields=safe_load("extracted_fields_json", row.extracted_fields_json),
+    flags=safe_load("flags_json", row.flags_json),
+    questions=safe_load("questions_json", row.questions_json),
+    phase3=safe_load("phase3_json", row.phase3_json),
+    ml=safe_load("ml_json", row.ml_json),
+)

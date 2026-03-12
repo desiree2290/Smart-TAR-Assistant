@@ -67,7 +67,7 @@ def _make_phase2_flags_for_scenario(tar: Dict[str, Any], scenario: str) -> List[
     if scenario == "clarify":
         # Aim score ~ 35-69: e.g. 6+9+9 = 24 (too low)
         # Better: 6 + 9 + 9 + 9 = 33 (still low) -> need >= 35
-        # So use: 6 + 9 + 9 + 9 + 3 = 36  ✅
+        # So use: 6 + 9 + 9 + 9 + 3 = 36  
         flags.extend([
             {
                 "type": "MISSING_JUSTIFICATION",
@@ -134,7 +134,7 @@ def _make_phase2_flags_for_scenario(tar: Dict[str, Any], scenario: str) -> List[
         ]
 
     if scenario == "hold":
-        # Aim score >= 70: easiest is 8 HIGH flags -> 8*9=72 ✅
+        # Aim score >= 70: easiest is 8 HIGH flags -> 8*9=72 
         flags.extend([
             {
                 "type": "MISSING_HOTEL",
@@ -190,7 +190,7 @@ def _make_phase2_flags_for_scenario(tar: Dict[str, Any], scenario: str) -> List[
     raise ValueError(f"Unknown scenario: {scenario}")
 
 
-def generate(n: int = 600, seed: int = 7) -> None:
+def generate(n: int = 3000, seed: int = 7) -> None:
     random.seed(seed)
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 

@@ -32,3 +32,5 @@ class AIReviewOut(BaseModel):
     extracted_fields: dict[str, Any]
     flags: list[dict[str, Any]]
     questions: list[str]
+    phase3: dict[str, Any]
+    ml: dict[str, Any]
