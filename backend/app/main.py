@@ -7,6 +7,7 @@ from app.review import run_review
 from .db import Base, engine
 from .api.requests import router as requests_router
 from .api.upload import router as upload_router
+from .routers.analytics import router as analytics_router
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Smart TAR Review Assistant API")
@@ -23,6 +24,7 @@ def create_app() -> FastAPI:
 
     app.include_router(requests_router)
     app.include_router(upload_router)
+    app.include_router(analytics_router)
 
     @app.get("/health")
     def health():
