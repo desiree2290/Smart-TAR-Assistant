@@ -36,9 +36,33 @@ export async function uploadAttachment(id, file) {
 }
 
 export async function submitRequest(id) {
-    const res = await fetch(`${API_BASE}/requests/${id}/submit`, { method: "POST" });
-    if (!res.ok) throw new Error("Failed to submit");
-    return res.json();
+    const res = await fetch(`/requests/${id}/submit`, {
+        method: "POST",
+    });
+
+    const data = await res.json();
+    console.log("submit response:", data);
+
+    if (!res.ok) {
+        throw new Error(data.detail || "Submit failed");
+    }
+
+    return data;
+}
+
+export async function updateRequestStatus(id, status, comment = "") {
+    const res = await fetch(`/requests/${id}/status`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            status,
+            comment
+        }),
+    });
+
+    return await res.json();
 }
 
 export async function getReview(id) {
@@ -48,8 +72,8 @@ export async function getReview(id) {
 }
 
 export async function runDemoScenario(type) {
-    const res = await fetch(`/api/demo/${type}`, {
-        method: "POST"
+    const res = await fetch(`/requests/demo/${type}`, {
+        method: "POST",
     });
 
     if (!res.ok) throw new Error("Demo failed");

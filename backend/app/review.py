@@ -95,6 +95,95 @@ def combine_risk(rule_score: int, ml_result: Dict[str, Any]) -> int:
     ml_bonus = ml_bonus_map.get(ml_prediction, 0)
     return rule_score + ml_bonus
 
+def compute_final_action(phase3: Dict[str, Any], ml_result: Dict[str, Any], flags: List[Dict[str, Any]]) -> str:
+    """
+    Final decision engine:
+    - uses rule severity as a safety override
+    - uses Phase 3 risk score bands
+    - falls back to ML prediction when needed
+    """
+    phase3_score = phase3.get("risk_score", 0)
+    ml_prediction = (ml_result.get("ml_prediction") or "clarify").strip().lower()
+
+    num_high_flags = sum(
+        1 for f in flags
+        if str(f.get("severity", "")).upper() == "HIGH"
+        or f.get("severity") == 9
+    )
+
+    # Safety override: too many severe issues should force HOLD
+    if num_high_flags >= 5:
+        return "hold"
+
+    # Score-based routing using Phase 3 score
+    if phase3_score >= 45:
+        return "hold"
+
+    if phase3_score >= 20:
+        return "clarify"
+
+    # Otherwise use ML if it's stricter than approve
+    if ml_prediction in {"hold", "clarify"}:
+        return ml_prediction
+
+    return "approve"
+
+def build_decision_explanation(
+    phase3: Dict[str, Any],
+    ml_result: Dict[str, Any],
+    flags: List[Dict[str, Any]],
+    final_action: str,
+) -> List[str]:
+    lines: List[str] = []
+
+    ml_prediction = (ml_result.get("ml_prediction") or "unknown").lower()
+    ml_conf = ml_result.get("ml_confidence")
+    risk_score = phase3.get("risk_score", 0)
+
+    num_high = sum(
+        1 for f in flags
+        if str(f.get("severity", "")).upper() == "HIGH"
+    )
+    num_med = sum(
+        1 for f in flags
+        if str(f.get("severity", "")).upper() in {"MED", "MEDIUM"}
+    )
+    num_low = sum(
+        1 for f in flags
+        if str(f.get("severity", "")).upper() == "LOW"
+    )
+
+    lines.append(f"Final decision: {final_action.upper()}")
+    lines.append(f"Phase 3 risk score: {risk_score}")
+    lines.append(
+        f"Flag mix: {num_high} high, {num_med} medium, {num_low} low"
+    )
+
+    if ml_conf is not None:
+        lines.append(
+            f"ML predicted '{ml_prediction}' with {ml_conf:.0%} confidence"
+        )
+    else:
+        lines.append(f"ML predicted '{ml_prediction}'")
+
+    if final_action == "hold":
+        lines.append("Decision was escalated because severe discrepancies exceeded the hold threshold.")
+    elif final_action == "clarify":
+        lines.append("Decision requires clarification because moderate issues were detected.")
+    else:
+        lines.append("Decision is approvable because severe discrepancies were not detected.")
+
+    top_reasons = []
+    for f in flags[:4]:
+        desc = (f.get("description") or "").strip()
+        if desc:
+            top_reasons.append(desc)
+
+    if top_reasons:
+        lines.append("Top reasons:")
+        lines.extend([f"- {r}" for r in top_reasons])
+
+    return lines
 
 # -------------------------
 # Packet parsing
@@ -247,7 +336,7 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
     end_date = request_payload["end_date"].strip()
     justification = request_payload["justification"].strip()
     traveler = request_payload["traveler_name"].strip()
-
+    
     flags: List[Dict[str, Any]] = []
     questions: List[str] = []
 
@@ -448,10 +537,14 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
 
         rule_score = len(flags)
         ml_result = run_ml_inference(extracted, flags)
-        final_score = combine_risk(rule_score, ml_result)
-        final_risk = label_risk(final_score)
 
         phase3 = _run_phase3(tar_for_phase3, phase2_flags=flags)
+
+        final_score = phase3["risk_score"]
+        final_risk = phase3["risk_level"]
+
+        final_action = compute_final_action(phase3, ml_result, flags)
+        decision_explanation = build_decision_explanation(phase3, ml_result, flags, final_action)
 
         summary = [
             f"Traveler: {traveler}",
@@ -461,6 +554,7 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
             f"Rule score: {rule_score}",
             f"Final risk score: {final_score}",
             f"Risk level: {final_risk}",
+            f"Final decision: {final_action}",
         ]
 
         if ml_result.get("ml_prediction") is not None:
@@ -479,6 +573,9 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
             "risk_level": final_risk,
             "phase3": phase3,
             "ml_result": ml_result,
+            "final_action": final_action,
+            "decision_explanation": decision_explanation,
+
         }
 
     # -------------------------
@@ -502,6 +599,8 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
     final_risk = label_risk(final_score)
 
     phase3 = _run_phase3(tar_for_phase3, phase2_flags=flags)
+    final_action = compute_final_action(phase3, ml_result, flags)
+    decision_explanation = build_decision_explanation(phase3, ml_result, flags, final_action)
 
     summary = [
         "Non-packet document format not supported.",
@@ -509,6 +608,7 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
         f"Rule score: {rule_score}",
         f"Final risk score: {final_score}",
         f"Risk level: {final_risk}",
+        f"Final decision: {final_action}",
     ]
 
     if ml_result.get("ml_prediction") is not None:
@@ -527,4 +627,6 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
         "risk_level": final_risk,
         "phase3": phase3,
         "ml_result": ml_result,
+        "final_action": final_action,
+        "decision_explanation": decision_explanation,
     }

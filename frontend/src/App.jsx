@@ -3,6 +3,7 @@ import { Routes, Route, NavLink } from "react-router-dom";
 import Traveler from "./pages/Traveler.jsx";
 import ApproverQueue from "./pages/ApproverQueue.jsx";
 import RequestDetail from "./pages/RequestDetail.jsx";
+import Analytics from "./pages/Analytics";
 
 export default function App() {
     return (
@@ -21,6 +22,7 @@ export default function App() {
                 <nav style={styles.nav}>
                     <AppNavLink to="/">Traveler</AppNavLink>
                     <AppNavLink to="/approver">Approver Queue</AppNavLink>
+                    <AppNavLink to="/analytics">Analytics</AppNavLink>
                 </nav>
             </header>
 
@@ -47,6 +49,7 @@ export default function App() {
                     <Route path="/" element={<Traveler />} />
                     <Route path="/approver" element={<ApproverQueue />} />
                     <Route path="/requests/:id" element={<RequestDetail />} />
+                    <Route path="/analytics" element={<Analytics />} />
                 </Routes>
             </main>
 
@@ -66,8 +69,16 @@ function AppNavLink({ to, children }) {
             to={to}
             end={to === "/"}
             style={({ isActive }) => ({
-                ...styles.navLink,
-                ...(isActive ? styles.navLinkActive : {}),
+                textDecoration: "none",
+                padding: "10px 14px",
+                borderRadius: 12,
+                borderWidth: "1px",
+                borderStyle: "solid",
+                borderColor: isActive ? "#0f172a" : "#cbd5e1",
+                background: isActive ? "#0f172a" : "#ffffff",
+                color: isActive ? "#ffffff" : "#334155",
+                fontWeight: 700,
+                fontSize: 14,
             })}
         >
             {children}
@@ -138,21 +149,7 @@ const styles = {
         gap: 10,
         flexWrap: "wrap",
     },
-    navLink: {
-        textDecoration: "none",
-        padding: "10px 14px",
-        borderRadius: 12,
-        border: "1px solid #cbd5e1",
-        background: "#ffffff",
-        color: "#334155",
-        fontWeight: 700,
-        fontSize: 14,
-    },
-    navLinkActive: {
-        background: "#0f172a",
-        borderColor: "#0f172a",
-        color: "#ffffff",
-    },
+    
     hero: {
         maxWidth: 1280,
         margin: "24px auto 0 auto",

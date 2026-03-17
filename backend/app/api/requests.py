@@ -15,6 +15,8 @@ from ..schemas import TravelRequestCreate, TravelRequestOut, AIReviewOut
 from ..settings import STORAGE_DIR
 from ..review import run_review
 
+from ..demo_cases import get_demo_case
+
 router = APIRouter(prefix="/requests", tags=["requests"])
 
 class PacketCreate(BaseModel):
@@ -34,6 +36,9 @@ class PacketCreate(BaseModel):
     mie_rate_usd: str = ""
     mie_source: str = ""
 
+class StatusUpdate(BaseModel):
+    status: str
+    comment: Optional[str] = None
 
 @router.post("", response_model=TravelRequestOut)
 def create_request(payload: TravelRequestCreate, db: Session = Depends(get_db)):
@@ -143,32 +148,42 @@ def create_packet(request_id: str, payload: PacketCreate, db: Session = Depends(
 
 @router.post("/{request_id}/submit")
 def submit_request(request_id: str, db: Session = Depends(get_db)):
+    print(f"\n[SUBMIT] request_id={request_id}")
+
     req = db.query(TravelRequest).filter(TravelRequest.id == request_id).first()
     if not req:
+        print("[ERROR] Request not found")
         raise HTTPException(status_code=404, detail="Request not found")
+
+    print(f"[INFO] Found request: traveler={req.traveler_name}, status={req.status}")
+    print(f"[INFO] packet_pdf_path={req.packet_pdf_path}")
 
     req.status = "submitted"
     db.commit()
 
-    # Minimal “doc_text”: placeholder (we’re not extracting PDF text yet)
-    # Later you’ll replace this with real extraction.
     doc_text = None
 
-# Prefer packet PDF (primary supporting packet)
     if req.packet_pdf_path:
+        print(f"[INFO] Extracting text from packet PDF: {req.packet_pdf_path}")
         doc_text = extract_pdf_text(req.packet_pdf_path, max_pages=5)
     else:
         attachment = db.query(Attachment).filter(Attachment.request_id == request_id).first()
+        print(f"[INFO] Attachment found? {'yes' if attachment else 'no'}")
         if attachment:
+            print(f"[INFO] Extracting text from attachment: {attachment.file_path}")
             doc_text = extract_pdf_text(attachment.file_path, max_pages=5)
 
+    print(f"[INFO] doc_text exists? {'yes' if doc_text else 'no'}")
+    if doc_text:
+        print("[DEBUG] doc_text preview:")
+        print(doc_text[:500])
+
     if not doc_text:
+        print("[ERROR] No supporting document text could be extracted")
         raise HTTPException(
             status_code=400,
             detail="No supporting document found. Upload attachment or generate packet before submitting."
         )
-
-
 
     review_payload = {
         "traveler_name": req.traveler_name,
@@ -177,28 +192,35 @@ def submit_request(request_id: str, db: Session = Depends(get_db)):
         "end_date": req.end_date,
         "justification": req.justification,
     }
+
+    print("[INFO] Running review")
     review_result = run_review(review_payload, doc_text)
+    print(f"[INFO] Review complete. flags={len(review_result.get('flags', []))}")
+    print(f"[INFO] ML result={review_result.get('ml_result')}")
 
     review_row = db.query(AIReview).filter(AIReview.request_id == request_id).first()
     if review_row:
+        print("[INFO] Updating existing AIReview row")
         review_row.summary_text = json.dumps(review_result["summary"])
         review_row.extracted_fields_json = json.dumps(review_result["extracted_fields"])
         review_row.flags_json = json.dumps(review_result["flags"])
         review_row.questions_json = json.dumps(review_result["questions"])
         review_row.phase3_json = json.dumps(review_result["phase3"])
-        review_row.ml_json = json.dumps(review_result["ml"])
+        review_row.ml_json = json.dumps(review_result["ml_result"])
     else:
+        print("[INFO] Creating new AIReview row")
         db.add(AIReview(
-        request_id=request_id,
-        summary_text=json.dumps(review_result["summary"]),
-        extracted_fields_json=json.dumps(review_result["extracted_fields"]),
-        flags_json=json.dumps(review_result["flags"]),
-        questions_json=json.dumps(review_result["questions"]),
-        phase3_json=json.dumps(review_result["phase3"]),
-        ml_json=json.dumps(review_result["ml"]),
-    ))
+            request_id=request_id,
+            summary_text=json.dumps(review_result["summary"]),
+            extracted_fields_json=json.dumps(review_result["extracted_fields"]),
+            flags_json=json.dumps(review_result["flags"]),
+            questions_json=json.dumps(review_result["questions"]),
+            phase3_json=json.dumps(review_result["phase3"]),
+            ml_json=json.dumps(review_result["ml_result"]),
+        ))
 
     db.commit()
+    print("[SUCCESS] Submit completed")
     return {"ok": True, "status": "submitted"}
 
 @router.get("/{request_id}/review", response_model=AIReviewOut)
@@ -218,11 +240,96 @@ def get_review(request_id: str, db: Session = Depends(get_db)):
                 detail=f"Failed to json.loads({label}). First 120 chars: {s[:120]!r}. Error: {e}"
             )
 
+    summary = safe_load("summary_text", row.summary_text)
+    extracted_fields = safe_load("extracted_fields_json", row.extracted_fields_json)
+    flags = safe_load("flags_json", row.flags_json)
+    questions = safe_load("questions_json", row.questions_json)
+    phase3 = safe_load("phase3_json", row.phase3_json)
+    ml_result = safe_load("ml_json", row.ml_json)
+
+    final_action = "clarify"
+    for line in summary:
+        if isinstance(line, str) and line.lower().startswith("final decision:"):
+            final_action = line.split(":", 1)[1].strip().lower()
+            break
+
+    decision_explanation = [
+        f"Final decision: {final_action.upper()}",
+        f"Phase 3 risk score: {phase3.get('risk_score', 0)}",
+        f"Risk level: {phase3.get('risk_level', 'UNKNOWN')}",
+        f"ML prediction: {ml_result.get('ml_prediction', 'unknown')}",
+        f"ML confidence: {ml_result.get('ml_confidence', 0):.2f}" if ml_result.get("ml_confidence") is not None else "ML confidence: unavailable",
+    ]
+
     return AIReviewOut(
-    summary=safe_load("summary_text", row.summary_text),
-    extracted_fields=safe_load("extracted_fields_json", row.extracted_fields_json),
-    flags=safe_load("flags_json", row.flags_json),
-    questions=safe_load("questions_json", row.questions_json),
-    phase3=safe_load("phase3_json", row.phase3_json),
-    ml=safe_load("ml_json", row.ml_json),
-)
+        summary=summary,
+        extracted_fields=extracted_fields,
+        flags=flags,
+        questions=questions,
+        phase3=phase3,
+        ml_result=ml_result,
+        final_action=final_action,
+        decision_explanation=decision_explanation,
+    )
+
+@router.patch("/{request_id}/status", response_model=TravelRequestOut)
+def update_request_status(request_id: str, payload: StatusUpdate, db: Session = Depends(get_db)):
+    req = db.query(TravelRequest).filter(TravelRequest.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    allowed = {"approved", "disapproved", "kickback"}
+    new_status = (payload.status or "").strip().lower()
+    req.reviewer_comment = payload.comment
+
+    if new_status not in allowed:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid status. Allowed values: {sorted(allowed)}"
+        )
+
+    req.status = new_status
+    db.commit()
+    db.refresh(req)
+
+    return TravelRequestOut(**req.__dict__)
+
+@router.post("/demo/{scenario}")
+def run_demo_scenario(scenario: str, db: Session = Depends(get_db)):
+    try:
+        request_payload, doc_text = get_demo_case(scenario)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    # Create the request
+    req_id = str(uuid.uuid4())
+    req = TravelRequest(
+        id=req_id,
+        traveler_name=request_payload["traveler_name"],
+        destination_city=request_payload["destination_city"],
+        start_date=request_payload["start_date"],
+        end_date=request_payload["end_date"],
+        justification=request_payload["justification"],
+        status="submitted",
+    )
+    db.add(req)
+    db.commit()
+    db.refresh(req)
+
+    # Run AI review immediately
+    review_result = run_review(request_payload, doc_text)
+
+    # Save review row
+    db.add(AIReview(
+        request_id=req_id,
+        summary_text=json.dumps(review_result["summary"]),
+        extracted_fields_json=json.dumps(review_result["extracted_fields"]),
+        flags_json=json.dumps(review_result["flags"]),
+        questions_json=json.dumps(review_result["questions"]),
+        phase3_json=json.dumps(review_result["phase3"]),
+        ml_json=json.dumps(review_result["ml_result"]),
+    ))
+
+    db.commit()
+
+    return {"id": req_id}

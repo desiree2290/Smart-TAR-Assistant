@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import RequestForm from "../components/RequestForm.jsx";
 import UploadAttachment from "../components/UploadAttachment.jsx";
-import { createRequest, submitRequest } from "../api.js";
+import { createRequest, submitRequest, runDemoScenario } from "../api.js";
 import { useNavigate } from "react-router-dom";
+
 
 export default function Traveler() {
     const [created, setCreated] = useState(null);
@@ -20,6 +21,28 @@ export default function Traveler() {
             setError("Unable to create request. Please try again.");
         } finally {
             setBusy(false);
+        }
+    }
+
+    async function onRunDemo(type) {
+        setBusy(true);
+        setError("");
+        try {
+            const req = await runDemoScenario(type);
+            nav(`/requests/${req.id}`);
+        } catch (err) {
+            setError("Unable to run demo scenario.");
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    async function runDemo(type) {
+        try {
+            const req = await runDemoScenario(type);
+            nav(`/requests/${req.id}`);
+        } catch {
+            alert("Demo failed");
         }
     }
 
@@ -61,10 +84,39 @@ export default function Traveler() {
             </div>
 
             {error && <div style={styles.errorBanner}>{error}</div>}
+            <div style={styles.demoBox}>
+                <h4>Quick Demo Scenarios</h4>
+                <p>Instantly generate example TAR submissions to demonstrate AI review behavior.</p>
+
+                <div style={styles.demoButtons}>
+
+                    <button
+                        style={{ ...styles.demoBtn, background: "#16a34a" }}
+                        onClick={() => runDemo("approve")}
+                    >
+                        Clean Request (Approve)
+                    </button>
+
+                    <button
+                        style={{ ...styles.demoBtn, background: "#d97706" }}
+                        onClick={() => runDemo("clarify")}
+                    >
+                        Minor Issues (Clarify)
+                    </button>
+
+                    <button
+                        style={{ ...styles.demoBtn, background: "#dc2626" }}
+                        onClick={() => runDemo("hold")}
+                    >
+                        High Risk (Hold)
+                    </button>
+
+                </div>
+            </div>
 
             <div style={styles.mainGrid}>
                 <div>
-                    <RequestForm onCreate={onCreate} disabled={busy} />
+                    <RequestForm onCreate={onCreate} onRunDemo={onRunDemo} disabled={busy} />
                 </div>
 
                 <div style={styles.sidePanel}>
@@ -332,4 +384,27 @@ const styles = {
         fontWeight: 700,
         fontSize: 14,
     },
+
+    demoBox: {
+        marginBottom: 20,
+        padding: 16,
+        background: "#ffffff",
+        border: "1px solid #e2e8f0",
+        borderRadius: 12
+    },
+
+    demoButtons: {
+        display: "flex",
+        gap: 10,
+        marginTop: 10
+    },
+
+    demoBtn: {
+        border: "none",
+        color: "white",
+        padding: "10px 16px",
+        borderRadius: 8,
+        cursor: "pointer",
+        fontWeight: 600
+    }
 };

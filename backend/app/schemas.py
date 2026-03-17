@@ -33,4 +33,6 @@ class AIReviewOut(BaseModel):
     flags: list[dict[str, Any]]
     questions: list[str]
     phase3: dict[str, Any]
-    ml: dict[str, Any]
+    ml_result: dict[str, Any]
+    final_action: str
+    decision_explanation: list[str]

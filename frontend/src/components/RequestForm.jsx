@@ -25,7 +25,7 @@ const demoScenarios = {
     },
 };
 
-export default function RequestForm({ onCreate, disabled }) {
+export default function RequestForm({ onCreate, onRunDemo, disabled }) {
     const [form, setForm] = useState(demoScenarios.approve);
 
     function setField(key, value) {
@@ -47,11 +47,12 @@ export default function RequestForm({ onCreate, disabled }) {
                 <div>
                     <h3 style={styles.title}>Create TAR</h3>
                     <p style={styles.subtitle}>
-                        Fill in traveler details, or load a demo scenario to quickly showcase the app.
+                        Fill in traveler details, load a demo scenario into the form, or run a full backend demo instantly.
                     </p>
                 </div>
             </div>
 
+            <div style={styles.sectionLabel}>Load demo data into form</div>
             <div style={styles.scenarioRow}>
                 <button
                     type="button"
@@ -73,6 +74,34 @@ export default function RequestForm({ onCreate, disabled }) {
                     style={{ ...styles.scenarioButton, ...styles.holdButton }}
                 >
                     Load Hold Demo
+                </button>
+            </div>
+
+            <div style={styles.sectionLabel}>Run full backend demo</div>
+            <div style={styles.scenarioRow}>
+                <button
+                    type="button"
+                    onClick={() => onRunDemo && onRunDemo("approve")}
+                    style={{ ...styles.scenarioButton, ...styles.approveButton }}
+                    disabled={disabled}
+                >
+                    Run Approve Demo
+                </button>
+                <button
+                    type="button"
+                    onClick={() => onRunDemo && onRunDemo("clarify")}
+                    style={{ ...styles.scenarioButton, ...styles.clarifyButton }}
+                    disabled={disabled}
+                >
+                    Run Clarify Demo
+                </button>
+                <button
+                    type="button"
+                    onClick={() => onRunDemo && onRunDemo("hold")}
+                    style={{ ...styles.scenarioButton, ...styles.holdButton }}
+                    disabled={disabled}
+                >
+                    Run Hold Demo
                 </button>
             </div>
 
@@ -182,6 +211,14 @@ const styles = {
         margin: "8px 0 0 0",
         color: "#475569",
         lineHeight: 1.5,
+    },
+    sectionLabel: {
+        marginBottom: 10,
+        fontSize: 12,
+        textTransform: "uppercase",
+        letterSpacing: 0.5,
+        color: "#64748b",
+        fontWeight: 700,
     },
     scenarioRow: {
         display: "flex",

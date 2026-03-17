@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+
 import {
     ResponsiveContainer,
     BarChart,
@@ -13,8 +14,141 @@ import {
     Legend,
 } from "recharts";
 
+function ConfidenceGauge({ value }) {
+    const percent = Math.round(value * 100);
+
+    let color = "#047857"; // green
+    if (percent > 60 && percent <= 80) color = "#b45309"; // orange
+    if (percent > 80) color = "#b91c1c"; // red
+
+    return (
+        <div style={styles.gaugeContainer}>
+            <div style={styles.gauge}>
+                <div
+                    style={{
+                        ...styles.gaugeFill,
+                        width: `${percent}%`,
+                        background: color
+                    }}
+                />
+            </div>
+
+            <div style={styles.gaugeLabel}>
+                {percent}% confidence
+            </div>
+        </div>
+    );
+}
+
+function DecisionBanner({ finalDecision, finalRiskScore, mlPrediction }) {
+    const d = String(finalDecision || "").toLowerCase();
+
+    let background = "#ecfdf3";
+    let border = "#bbf7d0";
+    let color = "#047857";
+    let title = "Approve recommended";
+
+    if (d === "clarify") {
+        background = "#fffbeb";
+        border = "#fde68a";
+        color = "#b45309";
+        title = "Clarification required";
+    }
+
+    if (d === "hold") {
+        background = "#fef2f2";
+        border = "#fecaca";
+        color = "#b91c1c";
+        title = "Hold for manual review";
+    }
+
+    return (
+        <div
+            style={{
+                background,
+                border: `1px solid ${border}`,
+                color,
+                borderRadius: 16,
+                padding: 16,
+            }}
+        >
+            <div style={{ fontSize: 18, fontWeight: 800 }}>{title}</div>
+            <div style={{ marginTop: 6, lineHeight: 1.5 }}>
+                Final decision: <b>{String(finalDecision).toUpperCase()}</b> ·
+                Risk score: <b>{finalRiskScore}</b> ·
+                ML prediction: <b>{mlPrediction}</b>
+            </div>
+        </div>
+    );
+}
+
+function InsightStrip({ finalDecision, finalRiskScore, highFlagCount, mlConfidence }) {
+    return (
+        <div style={styles.insightStrip}>
+            <div style={styles.insightPill}>
+                <span style={styles.insightLabel}>Decision</span>
+                <span style={{ ...styles.insightValue, ...metricTone(finalDecision) }}>
+                    {String(finalDecision).toUpperCase()}
+                </span>
+            </div>
+
+            <div style={styles.insightPill}>
+                <span style={styles.insightLabel}>Risk Score</span>
+                <span style={styles.insightValue}>{finalRiskScore}</span>
+            </div>
+
+            <div style={styles.insightPill}>
+                <span style={styles.insightLabel}>High Flags</span>
+                <span style={styles.insightValue}>{highFlagCount}</span>
+            </div>
+
+            <div style={styles.insightPill}>
+                <span style={styles.insightLabel}>Model Confidence</span>
+                <span style={styles.insightValue}>{Math.round(mlConfidence * 100)}%</span>
+            </div>
+        </div>
+    );
+}
+
 export default function ReviewPanel({ review, loading }) {
     const [activeTab, setActiveTab] = useState("summary");
+
+    const safeReview = review || {};
+    const safeFlags = safeReview.flags || [];
+    const safePhase3 = safeReview.phase3 || {};
+    const safeMlResult = safeReview.ml_result || {};
+
+    const ruleScore = safeFlags.length;
+    const finalRiskScore = safePhase3.risk_score ?? 0;
+    const riskLevel = safePhase3.risk_level ?? "unknown";
+    const mlPrediction = safeMlResult.ml_prediction ?? "n/a";
+    const mlConfidence = safeMlResult.ml_confidence ?? 0;
+    const finalDecision = safeReview.final_action ?? mlPrediction;
+
+    const features = safeMlResult.ml_features_used || {};
+    const probabilities = safeMlResult.ml_probabilities || [];
+    const highFlagCount = safeFlags.filter(
+        (f) => String(f.severity || "").toUpperCase() === "HIGH"
+    ).length;
+
+    const workflowSteps = [
+        "Request submitted",
+        `Rule checks completed (${ruleScore} discrepancies found)`,
+        `ML prediction generated: ${mlPrediction}`,
+        `Risk score computed: ${finalRiskScore}`,
+        `Final decision issued: ${finalDecision}`,
+    ];
+
+    const severityCounts = useMemo(() => {
+        const counts = { HIGH: 0, MED: 0, LOW: 0 };
+        safeFlags.forEach((f) => {
+            const sev = String(f.severity || "").toUpperCase();
+            if (sev === "HIGH") counts.HIGH += 1;
+            else if (sev === "MED" || sev === "MEDIUM") counts.MED += 1;
+            else if (sev === "LOW") counts.LOW += 1;
+        });
+        return counts;
+    }, [safeFlags]);
 
     if (loading) {
         return (
@@ -35,26 +169,6 @@ export default function ReviewPanel({ review, loading }) {
             </div>
         );
     }
-
-    const ruleScore = review.rule_score ?? review.flags?.length ?? 0;
-    const finalRiskScore = review.risk_score ?? 0;
-    const riskLevel = review.risk_level ?? "unknown";
-    const mlPrediction = review.ml_result?.ml_prediction ?? "n/a";
-    const mlConfidence = review.ml_result?.ml_confidence ?? 0;
-
-    const features = review.ml_result?.ml_features_used || {};
-    const probabilities = review.ml_result?.ml_probabilities || [];
-
-    const severityCounts = useMemo(() => {
-        const counts = { HIGH: 0, MED: 0, LOW: 0 };
-        (review.flags || []).forEach((f) => {
-            const sev = String(f.severity || "").toUpperCase();
-            if (sev === "HIGH") counts.HIGH += 1;
-            else if (sev === "MED" || sev === "MEDIUM") counts.MED += 1;
-            else if (sev === "LOW") counts.LOW += 1;
-        });
-        return counts;
-    }, [review.flags]);
 
     const probabilityData = [
         { name: "Approve", value: Number(((probabilities[0] || 0) * 100).toFixed(1)) },
@@ -77,10 +191,42 @@ export default function ReviewPanel({ review, loading }) {
 
     return (
         <div style={{ display: "grid", gap: 18 }}>
+            <DecisionBanner
+                finalDecision={finalDecision}
+                finalRiskScore={finalRiskScore}
+                mlPrediction={mlPrediction}
+            />
             <div style={styles.topGrid}>
-                <MetricCard title="Rule Score" value={ruleScore} subtitle="Deterministic checks" tone="neutral" />
-                <MetricCard title="Final Risk Score" value={finalRiskScore} subtitle="Rules + ML adjustment" tone={riskLevel} />
-                <MetricCard title="ML Prediction" value={mlPrediction} subtitle="Predicted review action" tone={riskLevel} capitalize />
+                <MetricCard
+                    title="Rule Score"
+                    value={ruleScore}
+                    subtitle="Deterministic checks"
+                    tone="neutral"
+                />
+
+                <MetricCard
+                    title="Final Risk Score"
+                    value={finalRiskScore}
+                    subtitle="Rules + ML adjustment"
+                    tone={riskLevel}
+                />
+
+                <MetricCard
+                    title="Final Decision"
+                    value={finalDecision}
+                    subtitle="Rules + ML decision"
+                    tone={finalDecision}
+                    capitalize
+                />
+
+                <MetricCard
+                    title="ML Prediction"
+                    value={mlPrediction}
+                    subtitle="Raw model output"
+                    tone="neutral"
+                    capitalize
+                />
+
                 <MetricCard
                     title="ML Confidence"
                     value={`${Math.round(mlConfidence * 100)}%`}
@@ -99,6 +245,12 @@ export default function ReviewPanel({ review, loading }) {
                     </div>
                     <div style={riskBadge(riskLevel)}>{riskLevel}</div>
                 </div>
+                <InsightStrip
+                    finalDecision={finalDecision}
+                    finalRiskScore={finalRiskScore}
+                    highFlagCount={highFlagCount}
+                    mlConfidence={mlConfidence}
+                />
 
                 <div style={styles.tabRow}>
                     <TabButton active={activeTab === "summary"} onClick={() => setActiveTab("summary")}>
@@ -110,8 +262,8 @@ export default function ReviewPanel({ review, loading }) {
                     <TabButton active={activeTab === "ml"} onClick={() => setActiveTab("ml")}>
                         ML Insights
                     </TabButton>
-                    <TabButton active={activeTab === "raw"} onClick={() => setActiveTab("raw")}>
-                        Raw JSON
+                    <TabButton active={activeTab === "raw"} onClick={() => setActiveTab("audit")}>
+                        Audit View
                     </TabButton>
                 </div>
 
@@ -142,6 +294,20 @@ export default function ReviewPanel({ review, loading }) {
                                 <div style={styles.goodText}>No follow-up questions ✅</div>
                             )}
                         </div>
+
+                        {/* NEW PANEL */}
+                        <div style={{ ...styles.sectionCard, gridColumn: "1 / -1" }}>
+                            <h4 style={styles.sectionTitle}>Review Pipeline</h4>
+
+                            <div style={styles.timeline}>
+                                {workflowSteps.map((step, i) => (
+                                    <div key={i} style={styles.timelineItem}>
+                                        <div style={styles.timelineBadge}>{i + 1}</div>
+                                        <div style={styles.timelineText}>{step}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 )}
 
@@ -158,6 +324,17 @@ export default function ReviewPanel({ review, loading }) {
                                                 <span style={severityBadge(f.severity)}>{f.severity}</span>
                                             </div>
                                             <div style={styles.flagDesc}>{f.description}</div>
+                                            {f.evidence && Object.keys(f.evidence).length > 0 && (
+                                                <div style={styles.evidenceBox}>
+                                                    <div style={styles.evidenceTitle}>Evidence</div>
+                                                    {Object.entries(f.evidence).map(([key, value]) => (
+                                                        <div key={key} style={styles.evidenceRow}>
+                                                            <div style={styles.evidenceKey}>{key}</div>
+                                                            <div style={styles.evidenceValue}>{String(value || "—")}</div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
@@ -208,6 +385,19 @@ export default function ReviewPanel({ review, loading }) {
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
+
+                            <ConfidenceGauge value={mlConfidence} />
+                            <div style={{ height: 280 }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={probabilityData}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis unit="%" />
+                                        <Tooltip />
+                                        <Bar dataKey="value" fill="#0f172a" radius={[8, 8, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
 
                         <div style={styles.sectionCard}>
@@ -238,29 +428,30 @@ export default function ReviewPanel({ review, loading }) {
                         </div>
 
                         <div style={{ ...styles.sectionCard, gridColumn: "1 / -1" }}>
-                            <h4 style={styles.sectionTitle}>Why this result?</h4>
+                            <h4 style={styles.sectionTitle}>Decision Explanation</h4>
+
                             <div style={styles.explainerBox}>
-                                <div>
-                                    <b>Rule score:</b> {ruleScore}
-                                </div>
-                                <div>
-                                    <b>ML prediction:</b> {mlPrediction}
-                                </div>
-                                <div>
-                                    <b>Confidence:</b> {Math.round(mlConfidence * 100)}%
-                                </div>
-                                <div style={{ marginTop: 8, color: "#475569" }}>
-                                    The final assessment blends structured discrepancy checks with the model’s predicted review action.
-                                </div>
+                                {(review.decision_explanation || []).map((line, i) => (
+                                    <div key={i} style={{ marginBottom: 8 }}>
+                                        {line}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
                 )}
 
-                {activeTab === "raw" && (
+                {activeTab === "audit" && (
                     <div style={styles.sectionCard}>
-                        <h4 style={styles.sectionTitle}>Raw Review Response</h4>
-                        <pre style={styles.pre}>{JSON.stringify(review, null, 2)}</pre>
+                        <h4 style={styles.sectionTitle}>Review Audit Record</h4>
+
+                        <div style={{ marginBottom: 12, color: "#475569" }}>
+                            Full structured response returned by the AI review pipeline.
+                        </div>
+
+                        <pre style={styles.pre}>
+                            {JSON.stringify(review, null, 2)}
+                        </pre>
                     </div>
                 )}
             </div>
@@ -272,7 +463,11 @@ function MetricCard({ title, value, subtitle, tone, capitalize }) {
     return (
         <div style={styles.metricCard}>
             <div style={styles.metricTitle}>{title}</div>
-            <div style={{ ...styles.metricValue, ...metricTone(tone), textTransform: capitalize ? "capitalize" : "none" }}>
+            <div style={{
+                ...styles.metricValue,
+                ...metricTone(tone),
+                ...metricBackground(tone)
+            }}>
                 {value}
             </div>
             <div style={styles.metricSubtitle}>{subtitle}</div>
@@ -321,10 +516,27 @@ function riskBadge(level) {
 function metricTone(tone) {
     const t = String(tone || "").toLowerCase();
 
+    // Risk levels
     if (t === "high") return { color: "#b91c1c" };
     if (t === "medium") return { color: "#b45309" };
     if (t === "low") return { color: "#047857" };
+
+    // Decision outcomes
+    if (t === "hold") return { color: "#b91c1c" };
+    if (t === "clarify") return { color: "#b45309" };
+    if (t === "approve") return { color: "#047857" };
+
     return { color: "#0f172a" };
+}
+
+function metricBackground(tone) {
+    const t = String(tone || "").toLowerCase();
+
+    if (t === "approve") return { background: "#ecfdf3", padding: "6px 10px", borderRadius: 8 };
+    if (t === "clarify") return { background: "#fffbeb", padding: "6px 10px", borderRadius: 8 };
+    if (t === "hold") return { background: "#fef2f2", padding: "6px 10px", borderRadius: 8 };
+
+    return {};
 }
 
 function formatFeatureLabel(key) {
@@ -334,7 +546,7 @@ function formatFeatureLabel(key) {
 const styles = {
     topGrid: {
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
         gap: 14,
     },
     metricCard: {
@@ -513,5 +725,120 @@ const styles = {
     emptyState: {
         color: "#475569",
         lineHeight: 1.5,
+    },
+    evidenceBox: {
+        marginTop: 10,
+        padding: 10,
+        background: "#f8fafc",
+        border: "1px dashed #cbd5e1",
+        borderRadius: 12,
+    },
+    evidenceTitle: {
+        fontSize: 12,
+        fontWeight: 700,
+        color: "#64748b",
+        textTransform: "uppercase",
+        marginBottom: 8,
+    },
+    evidenceRow: {
+        marginBottom: 8,
+    },
+    evidenceKey: {
+        fontSize: 12,
+        fontWeight: 700,
+        color: "#334155",
+    },
+    evidenceValue: {
+        fontSize: 13,
+        color: "#475569",
+        wordBreak: "break-word",
+    },
+
+    timeline: {
+        display: "grid",
+        gap: 12,
+    },
+    timelineItem: {
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        background: "#ffffff",
+        border: "1px solid #e2e8f0",
+        borderRadius: 14,
+        padding: 12,
+    },
+    timelineBadge: {
+        width: 28,
+        height: 28,
+        borderRadius: 999,
+        background: "#0f172a",
+        color: "#ffffff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: 700,
+        fontSize: 13,
+        flexShrink: 0,
+    },
+    timelineText: {
+        fontSize: 14,
+        color: "#1e293b",
+        fontWeight: 600,
+    },
+
+    gaugeContainer: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 10,
+    },
+
+    gauge: {
+        width: "100%",
+        height: 14,
+        background: "#e2e8f0",
+        borderRadius: 999,
+        overflow: "hidden",
+    },
+
+    gaugeFill: {
+        height: "100%",
+        borderRadius: 999,
+    },
+
+    gaugeLabel: {
+        fontWeight: 700,
+        color: "#334155",
+    },
+
+    insightStrip: {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 10,
+        marginBottom: 16,
+    },
+
+    insightPill: {
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        background: "#f8fafc",
+        border: "1px solid #e2e8f0",
+        borderRadius: 999,
+        padding: "8px 12px",
+    },
+
+    insightLabel: {
+        fontSize: 12,
+        fontWeight: 700,
+        color: "#64748b",
+        textTransform: "uppercase",
+        letterSpacing: 0.4,
+    },
+
+    insightValue: {
+        fontSize: 14,
+        fontWeight: 800,
+        color: "#0f172a",
     },
 };

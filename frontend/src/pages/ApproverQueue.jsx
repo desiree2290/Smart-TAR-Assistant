@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { listRequests } from "../api.js";
 import { Link } from "react-router-dom";
+import { listRequests, updateRequestStatus } from "../api.js";
 
 export default function ApproverQueue() {
     const [rows, setRows] = useState([]);
@@ -8,9 +8,25 @@ export default function ApproverQueue() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [sortBy, setSortBy] = useState("start_date");
 
+    const [commentModal, setCommentModal] = useState(null);
+    const [commentText, setCommentText] = useState("");
+
     useEffect(() => {
-        listRequests("submitted").then(setRows).catch(() => setRows([]));
+        listRequests().then(setRows).catch(() => setRows([]));
     }, []);
+
+    async function changeStatus(id, status) {
+        try {
+            const updated = await updateRequestStatus(id, status);
+
+            setRows((prev) =>
+                prev.map((r) => (r.id === id ? updated : r))
+            );
+        } catch (err) {
+            alert("Unable to update status");
+            console.error(err);
+        }
+    }
 
     const filteredRows = useMemo(() => {
         let data = [...rows];
@@ -27,34 +43,55 @@ export default function ApproverQueue() {
         }
 
         if (statusFilter !== "all") {
-            data = data.filter((r) => String(r.status || "").toLowerCase() === statusFilter);
+            data = data.filter(
+                (r) => String(r.status || "").toLowerCase() === statusFilter
+            );
         }
 
         data.sort((a, b) => {
             if (sortBy === "traveler_name") {
-                return String(a.traveler_name || "").localeCompare(String(b.traveler_name || ""));
+                return String(a.traveler_name || "").localeCompare(
+                    String(b.traveler_name || "")
+                );
             }
 
             if (sortBy === "destination_city") {
-                return String(a.destination_city || "").localeCompare(String(b.destination_city || ""));
+                return String(a.destination_city || "").localeCompare(
+                    String(b.destination_city || "")
+                );
             }
 
-            return String(a.start_date || "").localeCompare(String(b.start_date || ""));
+            return String(a.start_date || "").localeCompare(
+                String(b.start_date || "")
+            );
         });
 
         return data;
     }, [rows, search, statusFilter, sortBy]);
 
     const stats = useMemo(() => {
-        const submitted = rows.filter((r) => String(r.status || "").toLowerCase() === "submitted").length;
-        const pending = rows.filter((r) => String(r.status || "").toLowerCase().includes("pending")).length;
-        const approved = rows.filter((r) => String(r.status || "").toLowerCase().includes("approved")).length;
+        const submitted = rows.filter(
+            (r) => String(r.status || "").toLowerCase() === "submitted"
+        ).length;
+
+        const approved = rows.filter(
+            (r) => String(r.status || "").toLowerCase() === "approved"
+        ).length;
+
+        const disapproved = rows.filter(
+            (r) => String(r.status || "").toLowerCase() === "disapproved"
+        ).length;
+
+        const kickback = rows.filter(
+            (r) => String(r.status || "").toLowerCase() === "kickback"
+        ).length;
 
         return {
             total: rows.length,
             submitted,
-            pending,
             approved,
+            disapproved,
+            kickback,
         };
     }, [rows]);
 
@@ -64,7 +101,7 @@ export default function ApproverQueue() {
                 <div>
                     <h2 style={styles.pageTitle}>Approver Queue</h2>
                     <p style={styles.pageSubtitle}>
-                        Review submitted TARs, search traveler requests, and open individual review dashboards.
+                        Review submitted TARs, search requests, open review dashboards, and update approval status.
                     </p>
                 </div>
             </div>
@@ -72,8 +109,9 @@ export default function ApproverQueue() {
             <div style={styles.statsGrid}>
                 <StatCard label="Total Requests" value={stats.total} />
                 <StatCard label="Submitted" value={stats.submitted} />
-                <StatCard label="Pending" value={stats.pending} />
                 <StatCard label="Approved" value={stats.approved} />
+                <StatCard label="Disapproved" value={stats.disapproved} />
+                <StatCard label="Kickback" value={stats.kickback} />
             </div>
 
             <div style={styles.toolbar}>
@@ -90,17 +128,26 @@ export default function ApproverQueue() {
 
                 <div style={styles.toolbarGroup}>
                     <label style={styles.label}>Status</label>
-                    <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={styles.select}>
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        style={styles.select}
+                    >
                         <option value="all">All</option>
                         <option value="submitted">Submitted</option>
-                        <option value="pending">Pending</option>
                         <option value="approved">Approved</option>
+                        <option value="disapproved">Disapproved</option>
+                        <option value="kickback">Kickback</option>
                     </select>
                 </div>
 
                 <div style={styles.toolbarGroup}>
                     <label style={styles.label}>Sort By</label>
-                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={styles.select}>
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        style={styles.select}
+                    >
                         <option value="start_date">Start Date</option>
                         <option value="traveler_name">Traveler</option>
                         <option value="destination_city">Destination</option>
@@ -110,7 +157,7 @@ export default function ApproverQueue() {
 
             <div style={styles.card}>
                 <div style={styles.tableHeader}>
-                    <div style={styles.tableTitle}>Submitted Requests</div>
+                    <div style={styles.tableTitle}>Requests</div>
                     <div style={styles.tableCount}>{filteredRows.length} shown</div>
                 </div>
 
@@ -118,32 +165,116 @@ export default function ApproverQueue() {
                     <div style={styles.emptyState}>No matching requests found.</div>
                 ) : (
                     <div style={styles.list}>
-                        {filteredRows.map((r) => (
-                            <div key={r.id} style={styles.rowCard}>
-                                <div style={styles.rowTop}>
-                                    <div>
-                                        <div style={styles.travelerName}>{r.traveler_name || "Unknown Traveler"}</div>
-                                        <div style={styles.destinationText}>{r.destination_city || "Unknown Destination"}</div>
+                        {filteredRows.map((r) => {
+                            const status = String(r.status || "").toLowerCase();
+                            const decisionMade = ["approved", "disapproved", "kickback"].includes(status);
+
+                            return (
+                                <div key={r.id} style={styles.rowCard}>
+                                    <div style={styles.rowTop}>
+                                        <div>
+                                            <div style={styles.travelerName}>
+                                                {r.traveler_name || "Unknown Traveler"}
+                                            </div>
+                                            <div style={styles.destinationText}>
+                                                {r.destination_city || "Unknown Destination"}
+                                            </div>
+                                        </div>
+                                        <div style={statusBadge(r.status)}>
+                                            {r.status || "UNKNOWN"}
+                                        </div>
                                     </div>
-                                    <div style={statusBadge(r.status)}>{r.status || "UNKNOWN"}</div>
-                                </div>
 
-                                <div style={styles.metaGrid}>
-                                    <MetaItem label="Request ID" value={r.id} />
-                                    <MetaItem label="Start Date" value={r.start_date} />
-                                    <MetaItem label="End Date" value={r.end_date} />
-                                </div>
+                                    <div style={styles.metaGrid}>
+                                        <MetaItem label="Request ID" value={r.id} />
+                                        <MetaItem label="Start Date" value={r.start_date} />
+                                        <MetaItem label="End Date" value={r.end_date} />
+                                    </div>
 
-                                <div style={styles.actionsRow}>
-                                    <Link to={`/requests/${r.id}`} style={styles.openButton}>
-                                        Open Review
-                                    </Link>
+                                    <div style={styles.actionsRow}>
+                                        <Link to={`/requests/${r.id}`} style={styles.openButton}>
+                                            Review
+                                        </Link>
+
+                                        <button
+                                            disabled={decisionMade}
+                                            style={{
+                                                ...styles.actionButton,
+                                                ...styles.approveBtn,
+                                                ...(decisionMade ? styles.disabledBtn : {}),
+                                            }}
+                                            onClick={() => changeStatus(r.id, "approved")}
+                                        >
+                                            ✓ Approve
+                                        </button>
+
+                                        <button
+                                            disabled={decisionMade}
+                                            style={{
+                                                ...styles.actionButton,
+                                                ...styles.disapproveBtn,
+                                                ...(decisionMade ? styles.disabledBtn : {}),
+                                            }}
+                                            onClick={() => setCommentModal({ id: r.id, status: "disapproved" })}
+                                        >
+                                            ✕ Disapprove
+                                        </button>
+
+                                        <button
+                                            disabled={decisionMade}
+                                            style={{
+                                                ...styles.actionButton,
+                                                ...styles.kickbackBtn,
+                                                ...(decisionMade ? styles.disabledBtn : {}),
+                                            }}
+                                            onClick={() => setCommentModal({ id: r.id, status: "kickback" })}
+                                        >
+                                            ↺ Kickback
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>
+            {commentModal && (
+                <div style={styles.modalBackdrop}>
+                    <div style={styles.modal}>
+                        <h3>Provide Reason</h3>
+
+                        <textarea
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                            placeholder="Enter explanation for this decision..."
+                            style={styles.textarea}
+                        />
+
+                        <div style={styles.modalButtons}>
+                            <button
+                                style={styles.modalCancel}
+                                onClick={() => {
+                                    setCommentModal(null);
+                                    setCommentText("");
+                                }}
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                style={styles.modalConfirm}
+                                onClick={() => {
+                                    changeStatus(commentModal.id, commentModal.status, commentText);
+                                    setCommentModal(null);
+                                    setCommentText("");
+                                }}
+                            >
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
@@ -172,16 +303,16 @@ function statusBadge(status) {
     let bg = "#eef2ff";
     let color = "#4338ca";
 
-    if (s.includes("approved")) {
+    if (s === "approved") {
         bg = "#ecfdf3";
         color = "#047857";
-    } else if (s.includes("submitted")) {
+    } else if (s === "submitted") {
         bg = "#eff6ff";
         color = "#1d4ed8";
-    } else if (s.includes("pending")) {
+    } else if (s === "kickback") {
         bg = "#fffbeb";
         color = "#b45309";
-    } else if (s.includes("hold")) {
+    } else if (s === "disapproved") {
         bg = "#fef2f2";
         color = "#b91c1c";
     }
@@ -352,7 +483,8 @@ const styles = {
     actionsRow: {
         marginTop: 16,
         display: "flex",
-        justifyContent: "flex-end",
+        gap: 10,
+        flexWrap: "wrap",
     },
     openButton: {
         display: "inline-block",
@@ -362,9 +494,89 @@ const styles = {
         padding: "10px 16px",
         borderRadius: 12,
         fontWeight: 700,
+        marginRight: "auto",
     },
     emptyState: {
         padding: 20,
         color: "#475569",
     },
+    actionButton: {
+        border: "none",
+        borderRadius: 10,
+        padding: "10px 14px",
+        fontWeight: 700,
+        cursor: "pointer",
+    },
+    approveBtn: {
+        background: "#ecfdf3",
+        color: "#047857",
+    },
+    disapproveBtn: {
+        background: "#fef2f2",
+        color: "#b91c1c",
+    },
+    kickbackBtn: {
+        background: "#fffbeb",
+        color: "#b45309",
+    },
+    disabledBtn: {
+        opacity: 0.45,
+        cursor: "not-allowed",
+    },
+
+    modalBackdrop: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: "rgba(0,0,0,0.4)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 999
+    },
+
+    modal: {
+        background: "#ffffff",
+        padding: 24,
+        borderRadius: 16,
+        width: 400,
+        boxShadow: "0 20px 40px rgba(0,0,0,0.2)"
+    },
+
+    textarea: {
+        width: "100%",
+        minHeight: 100,
+        marginTop: 12,
+        padding: 12,
+        borderRadius: 10,
+        border: "1px solid #cbd5e1",
+        boxSizing: "border-box",
+        resize: "vertical"
+    },
+
+    modalButtons: {
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 10,
+        marginTop: 14
+    },
+
+    modalCancel: {
+        padding: "8px 14px",
+        borderRadius: 8,
+        border: "none",
+        background: "#e2e8f0",
+        cursor: "pointer"
+    },
+
+    modalConfirm: {
+        padding: "8px 14px",
+        borderRadius: 8,
+        border: "none",
+        background: "#0f172a",
+        color: "white",
+        cursor: "pointer"
+    }
 };
