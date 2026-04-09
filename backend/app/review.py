@@ -11,6 +11,8 @@ from app.phase3.models import RiskResult
 
 from app.ml_utils import run_ml_inference
 
+from app.services.ml_model import predict_justification
+
 LABEL_RE = re.compile(r"^([A-Z0-9_]+):\s*(.*)\s*$")
 
 # Airport code -> city mapping for parking heuristics
@@ -336,6 +338,11 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
     end_date = request_payload["end_date"].strip()
     justification = request_payload["justification"].strip()
     traveler = request_payload["traveler_name"].strip()
+
+    justification_ml_result = predict_justification(justification)
+    justification_ml_prediction = justification_ml_result["label"]
+    justification_ml_confidence = justification_ml_result["confidence"]
+    
     
     flags: List[Dict[str, Any]] = []
     questions: List[str] = []
@@ -538,6 +545,9 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
         rule_score = len(flags)
         ml_result = run_ml_inference(extracted, flags)
 
+        ml_result["justification_transformer_prediction"] = justification_ml_prediction
+        ml_result["justification_transformer_confidence"] = justification_ml_confidence
+
         phase3 = _run_phase3(tar_for_phase3, phase2_flags=flags)
 
         final_score = phase3["risk_score"]
@@ -595,6 +605,9 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
 
     rule_score = len(flags)
     ml_result = run_ml_inference(extracted, flags)
+
+    ml_result["justification_transformer_prediction"] = justification_ml_prediction
+    ml_result["justification_transformer_confidence"] = justification_ml_confidence
     final_score = combine_risk(rule_score, ml_result)
     final_risk = label_risk(final_score)
 
@@ -616,6 +629,11 @@ def run_review(request_payload: Dict[str, Any], doc_text: Optional[str]) -> Dict
 
     if ml_result.get("ml_confidence") is not None:
         summary.append(f"ML confidence: {ml_result['ml_confidence']:.2f}")
+
+    summary.append(
+        f"Transformer justification prediction: {justification_ml_prediction} "
+        f"({justification_ml_confidence:.2f})"
+    )
 
     return {
         "summary": summary,

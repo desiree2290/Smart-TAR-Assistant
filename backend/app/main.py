@@ -9,6 +9,9 @@ from .api.requests import router as requests_router
 from .api.upload import router as upload_router
 from .routers.analytics import router as analytics_router
 
+from pathlib import Path
+import json
+
 def create_app() -> FastAPI:
     app = FastAPI(title="Smart TAR Review Assistant API")
 
@@ -37,17 +40,16 @@ def create_app() -> FastAPI:
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
 
-        # 1. Create request in DB
-        # Replace this part with your actual create/save logic
+       
         req = create_request_in_db(request_payload)
 
-        # 2. Run review
+       
         review = run_review(request_payload, doc_text)
 
-        # 3. Save review in DB
+       
         save_review_in_db(req["id"], review)
 
-        # 4. Return request id so frontend can navigate to /requests/:id
+       
         return {"id": req["id"]}
 
     return app

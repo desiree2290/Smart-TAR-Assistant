@@ -1,0 +1,16 @@
+{
+  "flag_breakdown": [
+    {
+      "name": "MISSING_JUSTIFICATION",
+      "value": 0
+    },
+    {
+      "name": "HIGH_FLAG_CASES",
+      "value": 260
+    },
+    {
+      "name": "MULTI_FLAG_CASES",
+      "value": 213
+    }
+  ]
+}

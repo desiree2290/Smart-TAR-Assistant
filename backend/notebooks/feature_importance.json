@@ -1,0 +1,127 @@
+[
+  {
+    "feature": "num__risk_score",
+    "importance": 0.1403699720395891,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__trip_length_days",
+    "importance": 0.11253297257303206,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__flag_density",
+    "importance": 0.09591056310155018,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__num_flags",
+    "importance": 0.08016199080724441,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__justification_len",
+    "importance": 0.05398329739478977,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__num_high_flags",
+    "importance": 0.046664510440540895,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__num_med_flags",
+    "importance": 0.04641830355478846,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__has_packet",
+    "importance": 0.041939723625098166,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__num_low_flags",
+    "importance": 0.0393365485758243,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__sentiment_score",
+    "importance": 0.033222951678787506,
+    "group": "numeric"
+  },
+  {
+    "feature": "text__travel",
+    "importance": 0.029429666543958885,
+    "group": "text"
+  },
+  {
+    "feature": "cat__destination_city_DC",
+    "importance": 0.027146964868372495,
+    "group": "categorical"
+  },
+  {
+    "feature": "cat__destination_city_Norfolk",
+    "importance": 0.02488225960703909,
+    "group": "categorical"
+  },
+  {
+    "feature": "cat__destination_city_San Diego",
+    "importance": 0.024380122146146602,
+    "group": "categorical"
+  },
+  {
+    "feature": "cat__destination_city_Tokyo",
+    "importance": 0.024006759433491624,
+    "group": "categorical"
+  },
+  {
+    "feature": "text__high",
+    "importance": 0.019403970372986825,
+    "group": "text"
+  },
+  {
+    "feature": "text__mission",
+    "importance": 0.00905741077387104,
+    "group": "text"
+  },
+  {
+    "feature": "text__administrative travel",
+    "importance": 0.006528209466355115,
+    "group": "text"
+  },
+  {
+    "feature": "text__training",
+    "importance": 0.0061765526330783424,
+    "group": "text"
+  },
+  {
+    "feature": "text__standard",
+    "importance": 0.006164775783257632,
+    "group": "text"
+  },
+  {
+    "feature": "text__standard training",
+    "importance": 0.004356639877978766,
+    "group": "text"
+  },
+  {
+    "feature": "text__approval",
+    "importance": 0.004003215604940278,
+    "group": "text"
+  },
+  {
+    "feature": "text__official duties",
+    "importance": 0.003873535904102935,
+    "group": "text"
+  },
+  {
+    "feature": "text__high risk",
+    "importance": 0.0035979213683746242,
+    "group": "text"
+  },
+  {
+    "feature": "text__requires",
+    "importance": 0.003547216147122022,
+    "group": "text"
+  }
+]

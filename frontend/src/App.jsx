@@ -4,6 +4,7 @@ import Traveler from "./pages/Traveler.jsx";
 import ApproverQueue from "./pages/ApproverQueue.jsx";
 import RequestDetail from "./pages/RequestDetail.jsx";
 import Analytics from "./pages/Analytics";
+import FeatureTiles from "./components/FeatureTiles";
 
 export default function App() {
     return (
@@ -43,7 +44,7 @@ export default function App() {
                     <HeroStat label="Primary Goal" value="Faster, explainable review" />
                 </div>
             </section>
-
+            
             <main style={styles.main}>
                 <Routes>
                     <Route path="/" element={<Traveler />} />
@@ -52,7 +53,7 @@ export default function App() {
                     <Route path="/analytics" element={<Analytics />} />
                 </Routes>
             </main>
-
+            
             <footer style={styles.footer}>
                 <div>Smart TAR Assistant</div>
                 <div style={styles.footerText}>

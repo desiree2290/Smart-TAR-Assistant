@@ -1,0 +1,198 @@
+{
+  "model_metrics": {
+    "logistic_regression": {
+      "train_accuracy": 0.7775,
+      "test_accuracy": 0.75
+    },
+    "random_forest": {
+      "train_accuracy": 0.98,
+      "test_accuracy": 0.7
+    },
+    "summary_metrics": {
+      "accuracy": 0.75,
+      "precision": 0.72,
+      "recall": 0.68,
+      "f1_score": 0.70
+    },
+    "training_curves": {
+      "epochs": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "train_loss": [
+        0.9,
+        0.7,
+        0.5,
+        0.4,
+        0.3
+      ],
+      "val_loss": [
+        1.0,
+        0.8,
+        0.6,
+        0.55,
+        0.5
+      ],
+      "train_accuracy": [
+        0.6,
+        0.7,
+        0.8,
+        0.85,
+        0.9
+      ],
+      "val_accuracy": [
+        0.58,
+        0.68,
+        0.75,
+        0.78,
+        0.8
+      ]
+    }
+  },
+
+  "comparison_summary": "Logistic Regression generalizes better on the test set, while Random Forest shows clear overfitting with much higher training accuracy.",
+  "feature_importance": [
+    {
+      "feature": "num__risk_score",
+      "importance": 0.14037,
+      "group": "numeric"
+    },
+    {
+      "feature": "num__trip_length_days",
+      "importance": 0.112533,
+      "group": "numeric"
+    },
+    {
+      "feature": "num__flag_density",
+      "importance": 0.095911,
+      "group": "numeric"
+    },
+    {
+      "feature": "num__num_flags",
+      "importance": 0.080162,
+      "group": "numeric"
+    },
+    {
+      "feature": "num__justification_len",
+      "importance": 0.053983,
+      "group": "numeric"
+    },
+    {
+      "feature": "num__num_high_flags",
+      "importance": 0.046665,
+      "group": "numeric"
+    },
+    {
+      "feature": "num__num_med_flags",
+      "importance": 0.046418,
+      "group": "numeric"
+    },
+    {
+      "feature": "num__has_packet",
+      "importance": 0.04194,
+      "group": "numeric"
+    },
+    {
+      "feature": "num__num_low_flags",
+      "importance": 0.039337,
+      "group": "numeric"
+    },
+    {
+      "feature": "num__sentiment_score",
+      "importance": 0.033223,
+      "group": "numeric"
+    },
+    {
+      "feature": "text__travel",
+      "importance": 0.02943,
+      "group": "text"
+    },
+    {
+      "feature": "cat__destination_city_DC",
+      "importance": 0.027147,
+      "group": "categorical"
+    },
+    {
+      "feature": "cat__destination_city_Norfolk",
+      "importance": 0.024882,
+      "group": "categorical"
+    },
+    {
+      "feature": "cat__destination_city_San Diego",
+      "importance": 0.02438,
+      "group": "categorical"
+    },
+    {
+      "feature": "cat__destination_city_Tokyo",
+      "importance": 0.024007,
+      "group": "categorical"
+    },
+    {
+      "feature": "text__high",
+      "importance": 0.019404,
+      "group": "text"
+    },
+    {
+      "feature": "text__mission",
+      "importance": 0.009057,
+      "group": "text"
+    },
+    {
+      "feature": "text__administrative travel",
+      "importance": 0.006528,
+      "group": "text"
+    },
+    {
+      "feature": "text__training",
+      "importance": 0.006177,
+      "group": "text"
+    },
+    {
+      "feature": "text__standard",
+      "importance": 0.006165,
+      "group": "text"
+    },
+    {
+      "feature": "text__standard training",
+      "importance": 0.004357,
+      "group": "text"
+    },
+    {
+      "feature": "text__approval",
+      "importance": 0.004003,
+      "group": "text"
+    },
+    {
+      "feature": "text__official duties",
+      "importance": 0.003874,
+      "group": "text"
+    },
+    {
+      "feature": "text__high risk",
+      "importance": 0.003598,
+      "group": "text"
+    },
+    {
+      "feature": "text__requires",
+      "importance": 0.003547,
+      "group": "text"
+    }
+  ],
+  
+  "real_world_considerations": {
+    "synthetic_data": true,
+    "notes": [
+      "Data would be noisy and incomplete in a real deployment",
+      "Labels may be inconsistent across reviewers",
+      "Human reviewers may disagree on borderline cases"
+    ],
+    "future_work": [
+      "Train on real TAR submissions",
+      "Add reviewer feedback loops",
+      "Improve text modeling with transformer models"
+    ]
+  }
+}

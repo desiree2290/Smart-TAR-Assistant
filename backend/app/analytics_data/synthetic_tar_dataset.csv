@@ -1,0 +1,501 @@
+traveler_name,destination_city,trip_length_days,justification,has_packet,num_flags,num_high_flags,num_med_flags,num_low_flags,risk_score,final_action
+Traveler_0,DC,4,Travel requires additional approval due to high risk factors,1,4,2,2,0,30,hold
+Traveler_1,Norfolk,3,Travel requires additional approval due to high risk factors,1,2,2,0,0,18,hold
+Traveler_2,Tokyo,3,Official travel for training and operational support,1,4,1,3,0,27,hold
+Traveler_3,Tokyo,5,Standard training and administrative travel,1,0,0,0,0,0,approve
+Traveler_4,Tokyo,9,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_5,Tokyo,3,Travel requires additional approval due to high risk factors,1,3,2,1,0,24,hold
+Traveler_6,DC,7,Travel supports mission readiness and coordination,1,4,0,1,3,15,approve
+Traveler_7,Norfolk,9,Travel aligns with organizational objectives,1,1,0,1,0,6,approve
+Traveler_8,Tokyo,8,Official travel for training and operational support,1,2,1,0,1,12,clarify
+Traveler_9,Norfolk,6,Routine travel for official duties,1,1,1,0,0,9,clarify
+Traveler_10,Norfolk,2,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_11,DC,8,Travel supports mission readiness and coordination,1,3,0,1,2,12,clarify
+Traveler_12,Norfolk,5,Routine travel for official duties,1,1,0,1,0,6,approve
+Traveler_13,DC,1,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_14,Tokyo,8,High priority mission but documentation issues exist,0,2,2,0,0,18,hold
+Traveler_15,DC,5,Travel aligns with organizational objectives,0,1,0,1,0,6,clarify
+Traveler_16,Tokyo,2,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_17,Tokyo,5,Travel supports mission readiness and coordination,0,2,1,0,1,12,clarify
+Traveler_18,DC,3,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_19,Norfolk,7,Official travel for training and operational support,0,2,0,2,0,12,clarify
+Traveler_20,San Diego,3,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_21,Norfolk,5,Travel requires additional approval due to high risk factors,0,4,2,2,0,30,hold
+Traveler_22,DC,3,Official travel for training and operational support,0,3,1,1,1,18,clarify
+Traveler_23,Norfolk,4,Travel supports mission readiness and coordination,1,2,1,0,1,12,clarify
+Traveler_24,San Diego,1,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_25,San Diego,9,High priority mission but documentation issues exist,1,2,2,0,0,18,hold
+Traveler_26,San Diego,1,Required for mission-related activities and planning,1,2,1,1,0,15,clarify
+Traveler_27,Tokyo,8,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_28,Norfolk,4,Required for mission-related activities and planning,1,3,1,2,0,21,hold
+Traveler_29,San Diego,8,Routine travel for official duties,0,0,0,0,0,0,clarify
+Traveler_30,Tokyo,6,Official travel for training and operational support,0,4,0,0,4,12,clarify
+Traveler_31,Tokyo,6,High priority mission but documentation issues exist,1,3,2,0,1,21,hold
+Traveler_32,Norfolk,8,Required for mission-related activities and planning,1,4,1,1,2,21,clarify
+Traveler_33,Tokyo,1,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_34,San Diego,3,Multiple discrepancies require further review and validation,0,3,2,1,0,24,hold
+Traveler_35,DC,4,Required for mission-related activities and planning,1,3,0,0,3,9,approve
+Traveler_36,San Diego,9,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_37,Norfolk,3,Travel supports mission readiness and coordination,1,3,1,0,2,15,clarify
+Traveler_38,Tokyo,5,Travel requires additional approval due to high risk factors,0,4,2,2,0,30,hold
+Traveler_39,Tokyo,3,Required for mission-related activities and planning,1,3,1,0,2,15,approve
+Traveler_40,Tokyo,6,Official travel for training and operational support,1,3,1,2,0,21,clarify
+Traveler_41,San Diego,2,Travel aligns with organizational objectives,1,1,1,0,0,9,approve
+Traveler_42,San Diego,4,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_43,Tokyo,4,Required for mission-related activities and planning,1,2,0,0,2,6,clarify
+Traveler_44,DC,6,High priority mission but documentation issues exist,1,4,2,1,1,27,hold
+Traveler_45,San Diego,1,Travel requires additional approval due to high risk factors,0,3,2,1,0,24,hold
+Traveler_46,Tokyo,3,Travel requires additional approval due to high risk factors,0,3,2,1,0,24,clarify
+Traveler_47,Norfolk,5,Travel supports mission readiness and coordination,1,2,0,0,2,6,clarify
+Traveler_48,San Diego,3,Travel supports mission readiness and coordination,0,3,0,3,0,18,clarify
+Traveler_49,DC,1,Required for mission-related activities and planning,1,2,1,0,1,12,approve
+Traveler_50,DC,8,Standard training and administrative travel,0,1,1,0,0,9,approve
+Traveler_51,DC,2,Routine travel for official duties,0,1,0,1,0,6,approve
+Traveler_52,Tokyo,7,Required for mission-related activities and planning,1,4,1,2,1,24,hold
+Traveler_53,Tokyo,7,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_54,Tokyo,3,Required for mission-related activities and planning,1,3,1,1,1,18,clarify
+Traveler_55,DC,9,Standard training and administrative travel,0,1,0,1,0,6,approve
+Traveler_56,Norfolk,1,Official travel for training and operational support,0,3,1,1,1,18,clarify
+Traveler_57,San Diego,1,Travel supports mission readiness and coordination,1,4,0,3,1,21,hold
+Traveler_58,Norfolk,3,Official travel for training and operational support,1,3,0,1,2,12,clarify
+Traveler_59,San Diego,8,Travel supports mission readiness and coordination,1,2,1,0,1,12,clarify
+Traveler_60,Norfolk,7,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_61,Norfolk,1,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_62,Tokyo,5,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_63,DC,5,Multiple discrepancies require further review and validation,1,4,2,2,0,30,hold
+Traveler_64,San Diego,6,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_65,DC,1,Official travel for training and operational support,1,3,0,3,0,18,approve
+Traveler_66,San Diego,7,Travel supports mission readiness and coordination,1,3,0,1,2,12,clarify
+Traveler_67,Norfolk,6,Official travel for training and operational support,0,4,1,3,0,27,hold
+Traveler_68,Norfolk,1,Required for mission-related activities and planning,1,4,0,3,1,21,clarify
+Traveler_69,Tokyo,4,Travel supports mission readiness and coordination,1,3,1,2,0,21,hold
+Traveler_70,DC,5,Multiple discrepancies require further review and validation,0,3,2,0,1,21,hold
+Traveler_71,San Diego,2,High priority mission but documentation issues exist,0,4,2,1,1,27,hold
+Traveler_72,Tokyo,2,Official travel for training and operational support,1,2,0,2,0,12,clarify
+Traveler_73,San Diego,8,Travel supports mission readiness and coordination,0,3,0,0,3,9,clarify
+Traveler_74,San Diego,9,Official travel for training and operational support,1,2,0,2,0,12,clarify
+Traveler_75,Tokyo,8,Travel supports mission readiness and coordination,0,4,0,4,0,24,hold
+Traveler_76,Norfolk,1,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_77,DC,3,Routine travel for official duties,1,0,0,0,0,0,clarify
+Traveler_78,Tokyo,9,Required for mission-related activities and planning,1,3,1,2,0,21,hold
+Traveler_79,Tokyo,5,High priority mission but documentation issues exist,1,4,2,0,2,24,hold
+Traveler_80,San Diego,7,Routine travel for official duties,0,0,0,0,0,0,clarify
+Traveler_81,Norfolk,7,Routine travel for official duties,0,1,0,0,1,3,approve
+Traveler_82,Norfolk,9,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_83,DC,8,Standard training and administrative travel,0,1,0,1,0,6,approve
+Traveler_84,San Diego,5,Travel supports mission readiness and coordination,1,2,0,0,2,6,approve
+Traveler_85,San Diego,4,Travel supports mission readiness and coordination,0,3,1,2,0,21,hold
+Traveler_86,DC,3,Official travel for training and operational support,1,2,0,0,2,6,clarify
+Traveler_87,Tokyo,8,Travel requires additional approval due to high risk factors,0,4,2,0,2,24,hold
+Traveler_88,Tokyo,9,Travel supports mission readiness and coordination,1,3,0,0,3,9,clarify
+Traveler_89,Norfolk,5,High priority mission but documentation issues exist,1,4,2,0,2,24,hold
+Traveler_90,San Diego,2,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_91,San Diego,5,High priority mission but documentation issues exist,0,2,2,0,0,18,hold
+Traveler_92,Tokyo,8,Official travel for training and operational support,1,3,0,3,0,18,clarify
+Traveler_93,Tokyo,2,Required for mission-related activities and planning,1,3,0,0,3,9,clarify
+Traveler_94,San Diego,9,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_95,San Diego,3,Travel supports mission readiness and coordination,0,4,1,1,2,21,hold
+Traveler_96,Norfolk,8,Travel aligns with organizational objectives,0,1,0,0,1,3,approve
+Traveler_97,Norfolk,1,Routine travel for official duties,0,1,1,0,0,9,approve
+Traveler_98,Norfolk,9,Travel requires additional approval due to high risk factors,0,2,2,0,0,18,hold
+Traveler_99,San Diego,3,Travel aligns with organizational objectives,0,0,0,0,0,0,clarify
+Traveler_100,San Diego,5,Required for mission-related activities and planning,0,4,1,2,1,24,hold
+Traveler_101,San Diego,3,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_102,San Diego,3,Travel supports mission readiness and coordination,1,4,0,3,1,21,hold
+Traveler_103,Tokyo,2,Multiple discrepancies require further review and validation,0,3,2,1,0,24,hold
+Traveler_104,Norfolk,6,Travel requires additional approval due to high risk factors,1,2,2,0,0,18,hold
+Traveler_105,San Diego,9,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_106,DC,5,Required for mission-related activities and planning,0,4,1,1,2,21,clarify
+Traveler_107,Tokyo,2,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_108,DC,2,Required for mission-related activities and planning,0,3,0,1,2,12,clarify
+Traveler_109,DC,3,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_110,Tokyo,1,Routine travel for official duties,1,1,0,1,0,6,clarify
+Traveler_111,San Diego,2,Required for mission-related activities and planning,0,4,1,2,1,24,hold
+Traveler_112,San Diego,7,Travel supports mission readiness and coordination,1,2,1,1,0,15,approve
+Traveler_113,DC,2,Travel supports mission readiness and coordination,0,4,1,2,1,24,hold
+Traveler_114,Tokyo,6,Travel supports mission readiness and coordination,0,4,1,0,3,18,clarify
+Traveler_115,Norfolk,2,Standard training and administrative travel,1,0,0,0,0,0,approve
+Traveler_116,San Diego,9,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_117,DC,1,Routine travel for official duties,0,1,1,0,0,9,approve
+Traveler_118,Tokyo,8,Standard training and administrative travel,0,1,1,0,0,9,approve
+Traveler_119,San Diego,8,High priority mission but documentation issues exist,0,2,2,0,0,18,clarify
+Traveler_120,DC,2,Travel aligns with organizational objectives,0,1,1,0,0,9,approve
+Traveler_121,San Diego,7,Travel supports mission readiness and coordination,0,4,1,2,1,24,hold
+Traveler_122,Norfolk,9,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_123,DC,9,Required for mission-related activities and planning,1,4,1,2,1,24,hold
+Traveler_124,DC,8,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_125,San Diego,6,Required for mission-related activities and planning,0,3,1,1,1,18,approve
+Traveler_126,San Diego,9,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_127,Norfolk,7,Official travel for training and operational support,1,3,1,2,0,21,clarify
+Traveler_128,Tokyo,7,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_129,Tokyo,5,High priority mission but documentation issues exist,1,3,2,1,0,24,clarify
+Traveler_130,Norfolk,6,Standard training and administrative travel,1,0,0,0,0,0,approve
+Traveler_131,San Diego,2,Travel supports mission readiness and coordination,0,2,1,0,1,12,clarify
+Traveler_132,Norfolk,4,Required for mission-related activities and planning,1,2,0,0,2,6,approve
+Traveler_133,Norfolk,6,Travel supports mission readiness and coordination,0,4,1,2,1,24,hold
+Traveler_134,San Diego,6,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_135,Tokyo,2,Required for mission-related activities and planning,0,4,1,3,0,27,hold
+Traveler_136,San Diego,9,Multiple discrepancies require further review and validation,1,2,2,0,0,18,hold
+Traveler_137,Norfolk,1,Official travel for training and operational support,1,4,1,3,0,27,hold
+Traveler_138,Tokyo,9,Travel aligns with organizational objectives,0,1,1,0,0,9,clarify
+Traveler_139,Tokyo,6,Travel supports mission readiness and coordination,0,3,0,3,0,18,approve
+Traveler_140,Tokyo,3,Required for mission-related activities and planning,0,4,0,4,0,24,hold
+Traveler_141,Norfolk,4,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_142,Tokyo,8,Required for mission-related activities and planning,0,2,0,1,1,9,clarify
+Traveler_143,San Diego,9,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_144,Norfolk,5,Multiple discrepancies require further review and validation,0,2,2,0,0,18,clarify
+Traveler_145,DC,3,Travel aligns with organizational objectives,1,1,1,0,0,9,clarify
+Traveler_146,San Diego,4,Travel supports mission readiness and coordination,0,2,0,1,1,9,approve
+Traveler_147,DC,7,Standard training and administrative travel,1,0,0,0,0,0,approve
+Traveler_148,San Diego,1,Travel requires additional approval due to high risk factors,1,4,2,2,0,30,hold
+Traveler_149,Tokyo,8,Travel supports mission readiness and coordination,1,4,0,3,1,21,hold
+Traveler_150,DC,3,Travel supports mission readiness and coordination,0,2,1,0,1,12,approve
+Traveler_151,Norfolk,8,Standard training and administrative travel,0,1,1,0,0,9,approve
+Traveler_152,Norfolk,2,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_153,DC,4,Required for mission-related activities and planning,0,3,0,3,0,18,clarify
+Traveler_154,Tokyo,9,Travel supports mission readiness and coordination,1,2,0,1,1,9,approve
+Traveler_155,DC,1,Official travel for training and operational support,1,4,0,1,3,15,approve
+Traveler_156,San Diego,6,High priority mission but documentation issues exist,0,2,2,0,0,18,hold
+Traveler_157,San Diego,4,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_158,DC,4,Travel aligns with organizational objectives,1,0,0,0,0,0,clarify
+Traveler_159,DC,2,Required for mission-related activities and planning,0,2,1,0,1,12,clarify
+Traveler_160,DC,3,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_161,San Diego,1,Multiple discrepancies require further review and validation,1,4,2,2,0,30,hold
+Traveler_162,San Diego,1,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_163,Norfolk,6,Travel requires additional approval due to high risk factors,1,3,2,0,1,21,hold
+Traveler_164,Tokyo,7,High priority mission but documentation issues exist,1,2,2,0,0,18,hold
+Traveler_165,Norfolk,1,Travel supports mission readiness and coordination,1,4,0,2,2,18,approve
+Traveler_166,DC,2,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_167,Norfolk,3,Required for mission-related activities and planning,0,3,0,3,0,18,approve
+Traveler_168,Tokyo,3,Travel aligns with organizational objectives,0,1,1,0,0,9,clarify
+Traveler_169,Tokyo,2,Required for mission-related activities and planning,0,4,0,0,4,12,clarify
+Traveler_170,DC,8,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_171,San Diego,8,Standard training and administrative travel,1,1,0,1,0,6,approve
+Traveler_172,Norfolk,4,Official travel for training and operational support,0,3,0,1,2,12,clarify
+Traveler_173,Tokyo,2,Routine travel for official duties,0,1,0,0,1,3,approve
+Traveler_174,San Diego,3,Official travel for training and operational support,1,3,0,3,0,18,approve
+Traveler_175,San Diego,4,Required for mission-related activities and planning,1,2,1,0,1,12,clarify
+Traveler_176,Tokyo,4,Travel supports mission readiness and coordination,1,4,0,0,4,12,clarify
+Traveler_177,Tokyo,6,Required for mission-related activities and planning,1,3,0,1,2,12,approve
+Traveler_178,Tokyo,1,Routine travel for official duties,1,1,0,0,1,3,approve
+Traveler_179,San Diego,9,Standard training and administrative travel,1,0,0,0,0,0,approve
+Traveler_180,Tokyo,2,Travel requires additional approval due to high risk factors,1,4,2,1,1,27,clarify
+Traveler_181,San Diego,6,Standard training and administrative travel,0,1,0,0,1,3,approve
+Traveler_182,DC,5,Travel aligns with organizational objectives,0,1,1,0,0,9,clarify
+Traveler_183,Norfolk,8,Routine travel for official duties,0,1,1,0,0,9,approve
+Traveler_184,Norfolk,1,Standard training and administrative travel,1,1,0,1,0,6,approve
+Traveler_185,Norfolk,6,Required for mission-related activities and planning,0,2,0,2,0,12,clarify
+Traveler_186,San Diego,8,Required for mission-related activities and planning,0,2,0,2,0,12,approve
+Traveler_187,DC,8,Required for mission-related activities and planning,1,4,0,1,3,15,clarify
+Traveler_188,DC,4,Travel supports mission readiness and coordination,0,2,0,1,1,9,clarify
+Traveler_189,San Diego,2,Travel supports mission readiness and coordination,1,4,0,0,4,12,clarify
+Traveler_190,San Diego,8,Travel aligns with organizational objectives,0,1,0,0,1,3,approve
+Traveler_191,Tokyo,3,Routine travel for official duties,0,1,1,0,0,9,approve
+Traveler_192,DC,1,Required for mission-related activities and planning,0,4,0,1,3,15,clarify
+Traveler_193,Tokyo,8,Travel requires additional approval due to high risk factors,0,2,2,0,0,18,hold
+Traveler_194,Norfolk,6,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_195,DC,9,Official travel for training and operational support,1,4,1,2,1,24,hold
+Traveler_196,San Diego,7,Travel aligns with organizational objectives,1,1,0,1,0,6,approve
+Traveler_197,San Diego,7,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_198,San Diego,2,High priority mission but documentation issues exist,1,3,2,0,1,21,clarify
+Traveler_199,San Diego,8,Travel supports mission readiness and coordination,0,2,0,1,1,9,clarify
+Traveler_200,Norfolk,7,Travel requires additional approval due to high risk factors,1,3,2,0,1,21,hold
+Traveler_201,Norfolk,9,Travel supports mission readiness and coordination,1,4,1,0,3,18,clarify
+Traveler_202,Norfolk,2,Required for mission-related activities and planning,1,2,1,1,0,15,approve
+Traveler_203,San Diego,2,Multiple discrepancies require further review and validation,0,2,2,0,0,18,hold
+Traveler_204,Norfolk,1,Travel supports mission readiness and coordination,1,4,1,0,3,18,clarify
+Traveler_205,Tokyo,9,Travel aligns with organizational objectives,0,1,1,0,0,9,approve
+Traveler_206,San Diego,1,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_207,Norfolk,2,Travel supports mission readiness and coordination,0,3,1,1,1,18,clarify
+Traveler_208,San Diego,9,Travel aligns with organizational objectives,0,0,0,0,0,0,clarify
+Traveler_209,San Diego,5,Required for mission-related activities and planning,1,2,1,0,1,12,approve
+Traveler_210,DC,2,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_211,San Diego,6,Multiple discrepancies require further review and validation,1,4,2,0,2,24,hold
+Traveler_212,San Diego,9,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_213,San Diego,5,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_214,San Diego,3,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_215,Tokyo,3,Official travel for training and operational support,0,4,0,0,4,12,approve
+Traveler_216,DC,9,Travel requires additional approval due to high risk factors,1,2,2,0,0,18,clarify
+Traveler_217,San Diego,2,Travel supports mission readiness and coordination,0,3,1,0,2,15,clarify
+Traveler_218,DC,2,High priority mission but documentation issues exist,1,3,2,1,0,24,hold
+Traveler_219,Norfolk,2,Travel supports mission readiness and coordination,0,4,0,3,1,21,clarify
+Traveler_220,Tokyo,3,Standard training and administrative travel,1,1,0,1,0,6,approve
+Traveler_221,San Diego,1,Travel supports mission readiness and coordination,0,2,0,2,0,12,clarify
+Traveler_222,San Diego,9,Required for mission-related activities and planning,0,4,1,3,0,27,hold
+Traveler_223,DC,5,Required for mission-related activities and planning,0,2,0,1,1,9,approve
+Traveler_224,Norfolk,5,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_225,Tokyo,7,Standard training and administrative travel,0,1,1,0,0,9,approve
+Traveler_226,San Diego,1,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_227,Norfolk,3,Travel aligns with organizational objectives,1,1,0,1,0,6,approve
+Traveler_228,DC,5,Official travel for training and operational support,1,4,1,3,0,27,clarify
+Traveler_229,Tokyo,1,Official travel for training and operational support,1,3,1,0,2,15,clarify
+Traveler_230,Norfolk,8,Required for mission-related activities and planning,1,2,1,1,0,15,approve
+Traveler_231,Tokyo,3,Travel supports mission readiness and coordination,0,3,0,3,0,18,clarify
+Traveler_232,Norfolk,3,Official travel for training and operational support,1,2,1,0,1,12,clarify
+Traveler_233,San Diego,4,Routine travel for official duties,0,0,0,0,0,0,clarify
+Traveler_234,DC,7,Official travel for training and operational support,1,4,0,2,2,18,approve
+Traveler_235,Tokyo,6,Travel requires additional approval due to high risk factors,0,2,2,0,0,18,clarify
+Traveler_236,Tokyo,5,Travel requires additional approval due to high risk factors,0,4,2,1,1,27,hold
+Traveler_237,DC,1,Travel aligns with organizational objectives,1,1,1,0,0,9,approve
+Traveler_238,DC,1,Standard training and administrative travel,1,0,0,0,0,0,clarify
+Traveler_239,Tokyo,8,Travel supports mission readiness and coordination,0,3,1,0,2,15,approve
+Traveler_240,DC,2,Travel requires additional approval due to high risk factors,0,3,2,0,1,21,clarify
+Traveler_241,Norfolk,3,Official travel for training and operational support,0,3,1,2,0,21,hold
+Traveler_242,San Diego,4,Travel supports mission readiness and coordination,1,3,0,1,2,12,clarify
+Traveler_243,Norfolk,6,Required for mission-related activities and planning,1,4,0,1,3,15,approve
+Traveler_244,San Diego,8,Official travel for training and operational support,1,4,1,1,2,21,hold
+Traveler_245,DC,6,Official travel for training and operational support,0,2,0,0,2,6,approve
+Traveler_246,DC,6,Travel supports mission readiness and coordination,1,2,0,0,2,6,clarify
+Traveler_247,DC,6,Official travel for training and operational support,1,3,0,1,2,12,clarify
+Traveler_248,Norfolk,1,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_249,San Diego,4,Standard training and administrative travel,0,1,1,0,0,9,clarify
+Traveler_250,Norfolk,2,Routine travel for official duties,0,1,1,0,0,9,clarify
+Traveler_251,San Diego,3,Travel supports mission readiness and coordination,1,2,1,0,1,12,clarify
+Traveler_252,Tokyo,9,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_253,Tokyo,7,Official travel for training and operational support,1,2,1,1,0,15,clarify
+Traveler_254,DC,9,Official travel for training and operational support,0,3,1,1,1,18,clarify
+Traveler_255,DC,9,High priority mission but documentation issues exist,0,4,2,1,1,27,hold
+Traveler_256,San Diego,8,High priority mission but documentation issues exist,0,4,2,0,2,24,hold
+Traveler_257,Norfolk,2,Travel supports mission readiness and coordination,1,2,1,0,1,12,clarify
+Traveler_258,Tokyo,3,Required for mission-related activities and planning,1,2,0,0,2,6,clarify
+Traveler_259,DC,1,Travel requires additional approval due to high risk factors,0,4,2,1,1,27,hold
+Traveler_260,Tokyo,4,Travel supports mission readiness and coordination,0,3,1,0,2,15,clarify
+Traveler_261,San Diego,2,Official travel for training and operational support,1,3,1,2,0,21,hold
+Traveler_262,DC,3,Travel aligns with organizational objectives,0,1,1,0,0,9,approve
+Traveler_263,Tokyo,5,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_264,Tokyo,7,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_265,San Diego,5,Required for mission-related activities and planning,0,4,0,3,1,21,hold
+Traveler_266,DC,9,Travel supports mission readiness and coordination,1,3,1,2,0,21,hold
+Traveler_267,San Diego,2,Travel supports mission readiness and coordination,0,2,0,0,2,6,approve
+Traveler_268,Tokyo,4,High priority mission but documentation issues exist,0,4,2,2,0,30,clarify
+Traveler_269,Norfolk,9,Travel aligns with organizational objectives,0,0,0,0,0,0,clarify
+Traveler_270,San Diego,6,Required for mission-related activities and planning,0,3,0,2,1,15,clarify
+Traveler_271,San Diego,1,Travel aligns with organizational objectives,1,0,0,0,0,0,clarify
+Traveler_272,Tokyo,4,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_273,Tokyo,1,Required for mission-related activities and planning,0,2,1,0,1,12,clarify
+Traveler_274,San Diego,3,Required for mission-related activities and planning,1,3,1,0,2,15,clarify
+Traveler_275,Norfolk,9,Travel aligns with organizational objectives,0,1,0,0,1,3,approve
+Traveler_276,DC,2,Official travel for training and operational support,1,3,1,2,0,21,hold
+Traveler_277,Tokyo,2,Standard training and administrative travel,0,1,1,0,0,9,approve
+Traveler_278,DC,8,Official travel for training and operational support,0,4,1,0,3,18,clarify
+Traveler_279,San Diego,7,Standard training and administrative travel,1,1,0,1,0,6,approve
+Traveler_280,Norfolk,8,Travel aligns with organizational objectives,1,0,0,0,0,0,clarify
+Traveler_281,Norfolk,4,Travel aligns with organizational objectives,0,0,0,0,0,0,clarify
+Traveler_282,Norfolk,5,Official travel for training and operational support,1,4,0,1,3,15,approve
+Traveler_283,Norfolk,9,Routine travel for official duties,0,0,0,0,0,0,clarify
+Traveler_284,San Diego,5,Multiple discrepancies require further review and validation,0,4,2,0,2,24,hold
+Traveler_285,Norfolk,4,Travel supports mission readiness and coordination,1,2,1,1,0,15,approve
+Traveler_286,DC,1,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_287,Norfolk,7,Travel requires additional approval due to high risk factors,0,4,2,0,2,24,hold
+Traveler_288,San Diego,3,Required for mission-related activities and planning,0,3,1,1,1,18,clarify
+Traveler_289,Norfolk,2,Routine travel for official duties,0,0,0,0,0,0,clarify
+Traveler_290,Tokyo,2,Travel supports mission readiness and coordination,1,3,0,0,3,9,clarify
+Traveler_291,Norfolk,5,High priority mission but documentation issues exist,1,3,2,0,1,21,clarify
+Traveler_292,Norfolk,5,High priority mission but documentation issues exist,1,2,2,0,0,18,hold
+Traveler_293,DC,9,Travel requires additional approval due to high risk factors,0,3,2,0,1,21,hold
+Traveler_294,DC,2,Required for mission-related activities and planning,1,4,0,3,1,21,clarify
+Traveler_295,Tokyo,3,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_296,San Diego,4,Travel aligns with organizational objectives,0,1,0,1,0,6,approve
+Traveler_297,Norfolk,7,Travel requires additional approval due to high risk factors,0,4,2,2,0,30,hold
+Traveler_298,Norfolk,8,Travel supports mission readiness and coordination,1,3,1,2,0,21,hold
+Traveler_299,San Diego,7,Official travel for training and operational support,0,4,1,3,0,27,hold
+Traveler_300,Norfolk,8,Routine travel for official duties,1,1,0,0,1,3,approve
+Traveler_301,San Diego,4,Travel aligns with organizational objectives,0,1,1,0,0,9,approve
+Traveler_302,Norfolk,3,Official travel for training and operational support,0,3,1,0,2,15,clarify
+Traveler_303,San Diego,3,Travel supports mission readiness and coordination,0,3,1,0,2,15,clarify
+Traveler_304,Tokyo,5,High priority mission but documentation issues exist,1,2,2,0,0,18,hold
+Traveler_305,Norfolk,9,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_306,Norfolk,3,Travel aligns with organizational objectives,0,1,1,0,0,9,approve
+Traveler_307,DC,7,Official travel for training and operational support,1,3,1,2,0,21,hold
+Traveler_308,Tokyo,7,Travel supports mission readiness and coordination,1,4,1,3,0,27,clarify
+Traveler_309,DC,9,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_310,Tokyo,1,Required for mission-related activities and planning,1,3,1,0,2,15,clarify
+Traveler_311,Tokyo,6,Routine travel for official duties,1,1,0,1,0,6,approve
+Traveler_312,Norfolk,6,Standard training and administrative travel,1,1,0,1,0,6,approve
+Traveler_313,Norfolk,7,Travel supports mission readiness and coordination,1,3,1,1,1,18,clarify
+Traveler_314,DC,9,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_315,Tokyo,1,Travel requires additional approval due to high risk factors,1,3,2,1,0,24,hold
+Traveler_316,DC,8,Travel supports mission readiness and coordination,1,4,0,0,4,12,clarify
+Traveler_317,Norfolk,2,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_318,San Diego,4,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_319,San Diego,5,Routine travel for official duties,0,1,0,0,1,3,approve
+Traveler_320,Tokyo,7,Travel aligns with organizational objectives,1,1,1,0,0,9,approve
+Traveler_321,Norfolk,6,Required for mission-related activities and planning,1,3,0,3,0,18,clarify
+Traveler_322,Norfolk,2,Multiple discrepancies require further review and validation,1,4,2,1,1,27,clarify
+Traveler_323,Norfolk,3,Travel supports mission readiness and coordination,0,3,1,0,2,15,clarify
+Traveler_324,DC,2,Official travel for training and operational support,1,2,1,1,0,15,clarify
+Traveler_325,San Diego,2,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_326,DC,1,Multiple discrepancies require further review and validation,0,4,2,2,0,30,hold
+Traveler_327,San Diego,2,Required for mission-related activities and planning,0,4,1,3,0,27,clarify
+Traveler_328,Tokyo,4,Standard training and administrative travel,0,1,0,1,0,6,approve
+Traveler_329,DC,2,High priority mission but documentation issues exist,0,3,2,0,1,21,hold
+Traveler_330,Norfolk,9,Standard training and administrative travel,0,1,1,0,0,9,approve
+Traveler_331,Tokyo,9,Travel supports mission readiness and coordination,0,2,0,2,0,12,approve
+Traveler_332,Norfolk,3,Required for mission-related activities and planning,1,3,0,3,0,18,clarify
+Traveler_333,San Diego,7,Official travel for training and operational support,1,3,0,3,0,18,clarify
+Traveler_334,DC,5,Travel requires additional approval due to high risk factors,1,3,2,1,0,24,hold
+Traveler_335,DC,6,Required for mission-related activities and planning,1,4,0,4,0,24,hold
+Traveler_336,DC,5,Required for mission-related activities and planning,1,4,1,2,1,24,hold
+Traveler_337,San Diego,5,Routine travel for official duties,0,1,1,0,0,9,approve
+Traveler_338,San Diego,4,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_339,DC,5,Multiple discrepancies require further review and validation,1,3,2,0,1,21,hold
+Traveler_340,Tokyo,2,Travel supports mission readiness and coordination,1,2,0,0,2,6,clarify
+Traveler_341,San Diego,1,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_342,San Diego,1,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_343,Norfolk,8,High priority mission but documentation issues exist,1,4,2,2,0,30,hold
+Traveler_344,San Diego,1,High priority mission but documentation issues exist,0,3,2,1,0,24,hold
+Traveler_345,Tokyo,1,Required for mission-related activities and planning,0,4,0,0,4,12,clarify
+Traveler_346,DC,8,Travel supports mission readiness and coordination,1,2,0,0,2,6,clarify
+Traveler_347,DC,4,High priority mission but documentation issues exist,0,2,2,0,0,18,hold
+Traveler_348,DC,5,Official travel for training and operational support,1,4,1,1,2,21,hold
+Traveler_349,Tokyo,1,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_350,DC,1,Travel supports mission readiness and coordination,0,3,1,1,1,18,approve
+Traveler_351,DC,2,Travel aligns with organizational objectives,1,1,0,1,0,6,clarify
+Traveler_352,Norfolk,5,Required for mission-related activities and planning,1,3,1,2,0,21,hold
+Traveler_353,Norfolk,7,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_354,Norfolk,9,Standard training and administrative travel,1,1,1,0,0,9,clarify
+Traveler_355,Tokyo,3,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_356,Tokyo,7,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_357,San Diego,5,Multiple discrepancies require further review and validation,1,3,2,1,0,24,clarify
+Traveler_358,Norfolk,2,Travel aligns with organizational objectives,0,1,0,0,1,3,clarify
+Traveler_359,DC,3,Travel supports mission readiness and coordination,0,3,0,1,2,12,clarify
+Traveler_360,Tokyo,3,Multiple discrepancies require further review and validation,0,2,2,0,0,18,clarify
+Traveler_361,DC,9,Travel requires additional approval due to high risk factors,1,4,2,1,1,27,hold
+Traveler_362,DC,1,Multiple discrepancies require further review and validation,1,3,2,1,0,24,hold
+Traveler_363,San Diego,5,Travel requires additional approval due to high risk factors,1,2,2,0,0,18,hold
+Traveler_364,San Diego,4,Official travel for training and operational support,1,3,1,1,1,18,clarify
+Traveler_365,San Diego,9,Travel aligns with organizational objectives,1,1,0,0,1,3,approve
+Traveler_366,DC,7,Required for mission-related activities and planning,1,2,0,1,1,9,clarify
+Traveler_367,Tokyo,8,Travel supports mission readiness and coordination,1,2,1,0,1,12,clarify
+Traveler_368,DC,5,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_369,San Diego,7,Travel supports mission readiness and coordination,0,3,0,1,2,12,clarify
+Traveler_370,DC,4,Official travel for training and operational support,1,3,1,1,1,18,clarify
+Traveler_371,Tokyo,3,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_372,Tokyo,6,Travel requires additional approval due to high risk factors,1,4,2,2,0,30,hold
+Traveler_373,DC,1,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_374,DC,9,Travel supports mission readiness and coordination,0,3,1,0,2,15,clarify
+Traveler_375,Tokyo,6,Multiple discrepancies require further review and validation,0,3,2,0,1,21,hold
+Traveler_376,San Diego,4,Travel supports mission readiness and coordination,0,4,1,1,2,21,hold
+Traveler_377,Norfolk,6,Travel supports mission readiness and coordination,0,4,1,0,3,18,approve
+Traveler_378,DC,3,Routine travel for official duties,0,1,0,0,1,3,approve
+Traveler_379,San Diego,5,Official travel for training and operational support,1,3,1,1,1,18,approve
+Traveler_380,Norfolk,3,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_381,San Diego,6,Travel supports mission readiness and coordination,1,3,0,2,1,15,approve
+Traveler_382,Norfolk,8,Required for mission-related activities and planning,1,3,1,1,1,18,clarify
+Traveler_383,Tokyo,8,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_384,San Diego,6,Required for mission-related activities and planning,1,3,0,0,3,9,clarify
+Traveler_385,Norfolk,9,Required for mission-related activities and planning,0,4,1,0,3,18,clarify
+Traveler_386,DC,2,High priority mission but documentation issues exist,1,2,2,0,0,18,hold
+Traveler_387,Norfolk,8,Standard training and administrative travel,0,0,0,0,0,0,clarify
+Traveler_388,San Diego,3,Travel aligns with organizational objectives,0,1,0,1,0,6,approve
+Traveler_389,San Diego,9,Travel supports mission readiness and coordination,1,4,0,0,4,12,clarify
+Traveler_390,Norfolk,9,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_391,Tokyo,9,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_392,Norfolk,2,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_393,Norfolk,9,Travel aligns with organizational objectives,1,1,1,0,0,9,approve
+Traveler_394,Norfolk,8,High priority mission but documentation issues exist,0,3,2,1,0,24,hold
+Traveler_395,Tokyo,7,Official travel for training and operational support,1,4,1,2,1,24,hold
+Traveler_396,DC,8,Multiple discrepancies require further review and validation,1,4,2,1,1,27,hold
+Traveler_397,San Diego,8,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_398,San Diego,8,Required for mission-related activities and planning,1,2,0,1,1,9,clarify
+Traveler_399,Tokyo,7,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_400,San Diego,3,Travel supports mission readiness and coordination,1,2,1,1,0,15,clarify
+Traveler_401,San Diego,8,Travel aligns with organizational objectives,0,0,0,0,0,0,clarify
+Traveler_402,Tokyo,2,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_403,DC,3,High priority mission but documentation issues exist,1,4,2,2,0,30,clarify
+Traveler_404,San Diego,1,Multiple discrepancies require further review and validation,1,4,2,0,2,24,hold
+Traveler_405,Norfolk,3,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_406,Tokyo,1,Multiple discrepancies require further review and validation,0,4,2,0,2,24,hold
+Traveler_407,Tokyo,6,Travel aligns with organizational objectives,0,1,0,0,1,3,approve
+Traveler_408,DC,1,Official travel for training and operational support,1,3,0,3,0,18,clarify
+Traveler_409,San Diego,3,Official travel for training and operational support,1,4,0,0,4,12,clarify
+Traveler_410,DC,9,Travel supports mission readiness and coordination,1,2,1,0,1,12,clarify
+Traveler_411,Norfolk,6,Travel supports mission readiness and coordination,1,2,1,1,0,15,clarify
+Traveler_412,Norfolk,1,High priority mission but documentation issues exist,0,4,2,1,1,27,hold
+Traveler_413,Norfolk,9,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_414,DC,3,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_415,Norfolk,3,Travel requires additional approval due to high risk factors,1,3,2,0,1,21,hold
+Traveler_416,San Diego,8,Official travel for training and operational support,0,2,1,0,1,12,clarify
+Traveler_417,San Diego,3,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_418,Norfolk,4,Required for mission-related activities and planning,0,3,0,2,1,15,clarify
+Traveler_419,DC,2,Required for mission-related activities and planning,0,2,0,1,1,9,clarify
+Traveler_420,DC,2,Required for mission-related activities and planning,1,3,0,3,0,18,clarify
+Traveler_421,DC,4,Standard training and administrative travel,0,0,0,0,0,0,clarify
+Traveler_422,DC,6,Standard training and administrative travel,0,0,0,0,0,0,clarify
+Traveler_423,Norfolk,3,Routine travel for official duties,1,0,0,0,0,0,clarify
+Traveler_424,DC,9,High priority mission but documentation issues exist,0,2,2,0,0,18,clarify
+Traveler_425,Norfolk,8,Travel supports mission readiness and coordination,1,4,0,3,1,21,hold
+Traveler_426,Tokyo,1,Travel supports mission readiness and coordination,0,3,0,1,2,12,clarify
+Traveler_427,DC,9,Multiple discrepancies require further review and validation,1,3,2,1,0,24,hold
+Traveler_428,Norfolk,6,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_429,Tokyo,1,Multiple discrepancies require further review and validation,1,3,2,0,1,21,clarify
+Traveler_430,DC,5,Travel supports mission readiness and coordination,1,4,0,2,2,18,approve
+Traveler_431,San Diego,9,Travel requires additional approval due to high risk factors,1,3,2,0,1,21,hold
+Traveler_432,DC,8,Required for mission-related activities and planning,0,3,1,1,1,18,clarify
+Traveler_433,Norfolk,4,Required for mission-related activities and planning,0,4,1,3,0,27,hold
+Traveler_434,San Diego,3,Multiple discrepancies require further review and validation,1,3,2,0,1,21,hold
+Traveler_435,DC,6,Required for mission-related activities and planning,0,3,1,1,1,18,approve
+Traveler_436,Tokyo,7,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_437,Norfolk,8,Travel supports mission readiness and coordination,0,2,1,0,1,12,clarify
+Traveler_438,DC,8,Travel supports mission readiness and coordination,0,2,0,0,2,6,clarify
+Traveler_439,Norfolk,1,Travel supports mission readiness and coordination,0,2,0,1,1,9,clarify
+Traveler_440,Tokyo,6,Routine travel for official duties,0,0,0,0,0,0,approve
+Traveler_441,San Diego,8,High priority mission but documentation issues exist,0,4,2,2,0,30,clarify
+Traveler_442,San Diego,3,Travel supports mission readiness and coordination,1,2,0,2,0,12,clarify
+Traveler_443,Tokyo,3,Travel supports mission readiness and coordination,0,3,0,0,3,9,clarify
+Traveler_444,San Diego,7,Travel supports mission readiness and coordination,1,3,1,0,2,15,clarify
+Traveler_445,DC,7,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_446,Tokyo,1,Required for mission-related activities and planning,0,3,1,0,2,15,clarify
+Traveler_447,Tokyo,1,Standard training and administrative travel,1,0,0,0,0,0,approve
+Traveler_448,San Diego,7,Standard training and administrative travel,0,1,0,0,1,3,approve
+Traveler_449,DC,2,Required for mission-related activities and planning,0,2,1,0,1,12,approve
+Traveler_450,Tokyo,6,Official travel for training and operational support,0,2,0,1,1,9,approve
+Traveler_451,Norfolk,8,Travel aligns with organizational objectives,1,1,0,0,1,3,approve
+Traveler_452,DC,5,Required for mission-related activities and planning,0,4,1,0,3,18,clarify
+Traveler_453,Tokyo,9,Official travel for training and operational support,0,3,0,1,2,12,clarify
+Traveler_454,San Diego,7,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_455,Tokyo,2,High priority mission but documentation issues exist,1,2,2,0,0,18,hold
+Traveler_456,DC,8,Official travel for training and operational support,0,2,1,0,1,12,approve
+Traveler_457,San Diego,8,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_458,San Diego,8,Travel aligns with organizational objectives,0,0,0,0,0,0,approve
+Traveler_459,San Diego,2,High priority mission but documentation issues exist,0,3,2,0,1,21,hold
+Traveler_460,DC,1,Routine travel for official duties,1,0,0,0,0,0,approve
+Traveler_461,Tokyo,4,Travel supports mission readiness and coordination,0,3,1,0,2,15,clarify
+Traveler_462,San Diego,8,Travel requires additional approval due to high risk factors,0,2,2,0,0,18,hold
+Traveler_463,DC,6,High priority mission but documentation issues exist,1,2,2,0,0,18,hold
+Traveler_464,DC,5,Routine travel for official duties,0,1,0,1,0,6,clarify
+Traveler_465,San Diego,3,Travel supports mission readiness and coordination,0,3,1,0,2,15,clarify
+Traveler_466,DC,4,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_467,San Diego,9,Standard training and administrative travel,0,0,0,0,0,0,approve
+Traveler_468,San Diego,7,Multiple discrepancies require further review and validation,1,2,2,0,0,18,hold
+Traveler_469,DC,1,Travel supports mission readiness and coordination,1,4,1,2,1,24,clarify
+Traveler_470,DC,4,Travel supports mission readiness and coordination,1,2,0,2,0,12,clarify
+Traveler_471,DC,2,Travel requires additional approval due to high risk factors,0,2,2,0,0,18,hold
+Traveler_472,Norfolk,8,Standard training and administrative travel,1,0,0,0,0,0,approve
+Traveler_473,DC,5,Official travel for training and operational support,0,3,0,0,3,9,clarify
+Traveler_474,Tokyo,5,Travel aligns with organizational objectives,0,1,0,1,0,6,clarify
+Traveler_475,San Diego,6,Travel requires additional approval due to high risk factors,1,2,2,0,0,18,hold
+Traveler_476,Tokyo,9,Routine travel for official duties,1,1,1,0,0,9,clarify
+Traveler_477,Norfolk,4,Travel aligns with organizational objectives,1,1,1,0,0,9,approve
+Traveler_478,Tokyo,7,Travel requires additional approval due to high risk factors,1,2,2,0,0,18,hold
+Traveler_479,San Diego,3,Required for mission-related activities and planning,1,4,1,2,1,24,hold
+Traveler_480,DC,4,Travel requires additional approval due to high risk factors,0,4,2,2,0,30,hold
+Traveler_481,San Diego,1,High priority mission but documentation issues exist,1,2,2,0,0,18,hold
+Traveler_482,San Diego,7,Routine travel for official duties,1,1,1,0,0,9,approve
+Traveler_483,DC,6,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_484,Tokyo,2,Travel aligns with organizational objectives,1,0,0,0,0,0,approve
+Traveler_485,San Diego,3,Travel supports mission readiness and coordination,1,2,1,1,0,15,clarify
+Traveler_486,Norfolk,7,Travel supports mission readiness and coordination,0,2,0,0,2,6,clarify
+Traveler_487,San Diego,8,Required for mission-related activities and planning,1,4,0,0,4,12,clarify
+Traveler_488,Tokyo,7,Standard training and administrative travel,1,0,0,0,0,0,approve
+Traveler_489,Tokyo,6,High priority mission but documentation issues exist,1,2,2,0,0,18,hold
+Traveler_490,San Diego,2,Official travel for training and operational support,0,4,0,2,2,18,clarify
+Traveler_491,Tokyo,1,Standard training and administrative travel,1,1,1,0,0,9,approve
+Traveler_492,Norfolk,8,Required for mission-related activities and planning,0,3,1,2,0,21,clarify
+Traveler_493,Norfolk,7,Travel supports mission readiness and coordination,0,2,1,0,1,12,approve
+Traveler_494,San Diego,9,Travel supports mission readiness and coordination,0,4,0,4,0,24,hold
+Traveler_495,San Diego,6,Travel aligns with organizational objectives,0,0,0,0,0,0,clarify
+Traveler_496,Norfolk,4,Official travel for training and operational support,1,3,1,1,1,18,approve
+Traveler_497,Tokyo,6,Official travel for training and operational support,0,3,0,2,1,15,clarify
+Traveler_498,DC,2,Travel aligns with organizational objectives,1,1,1,0,0,9,approve
+Traveler_499,Tokyo,1,Routine travel for official duties,0,0,0,0,0,0,approve
