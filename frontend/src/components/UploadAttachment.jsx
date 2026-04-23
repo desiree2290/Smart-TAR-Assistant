@@ -5,6 +5,10 @@ export default function UploadAttachment({ requestId }) {
     const [file, setFile] = useState(null);
     const [msg, setMsg] = useState("");
     const [busy, setBusy] = useState(false);
+    const [uploadResult, setUploadResult] = useState(null);
+    const [submitBusy, setSubmitBusy] = useState(false);
+    const [submitMsg, setSubmitMsg] = useState("");
+
 
     const fileMeta = useMemo(() => {
         if (!file) return null;
@@ -17,18 +21,43 @@ export default function UploadAttachment({ requestId }) {
         };
     }, [file]);
 
+    const [reviewResult, setReviewResult] = useState(null);
+
     async function onUpload() {
         if (!file || busy) return;
 
         setBusy(true);
         setMsg("Uploading packet...");
+
         try {
-            await uploadAttachment(requestId, file);
-            setMsg("Packet uploaded successfully ✅");
-        } catch {
-            setMsg("Upload failed ❌");
+            const result = await uploadAttachment(requestId, file);
+
+            setUploadResult(result);  // 👈 SAVE RESPONSE
+
+            setMsg("Packet uploaded successfully ");
+        } catch (e) {
+            setMsg("Upload failed ");
         } finally {
             setBusy(false);
+        }
+    }
+
+    async function onSubmitReview() {
+        if (!requestId || submitBusy) return;
+
+        setSubmitBusy(true);
+        setSubmitMsg("Submitting request and running AI review...");
+        setReviewResult(null);
+
+        try {
+            const result = await submitRequest(requestId);
+            setReviewResult(result.review);
+            setSubmitMsg("AI review completed ");
+        } catch (err) {
+            console.error(err);
+            setSubmitMsg("AI review failed ");
+        } finally {
+            setSubmitBusy(false);
         }
     }
 
@@ -101,6 +130,64 @@ export default function UploadAttachment({ requestId }) {
                     }}
                 >
                     {msg}
+                </div>
+            )}
+            {uploadResult && (
+                <div style={{
+                    marginTop: 16,
+                    padding: 16,
+                    border: "1px solid #e2e8f0",
+                    borderRadius: 12,
+                    background: "#f8fafc"
+                }}>
+                    <h4 style={{ marginTop: 0 }}>Extracted Packet Preview</h4>
+
+                    <p><strong>File:</strong> {uploadResult.filename}</p>
+
+                    <pre style={{
+                        whiteSpace: "pre-wrap",
+                        fontSize: 12,
+                        background: "#fff",
+                        padding: 12,
+                        borderRadius: 8,
+                        maxHeight: 200,
+                        overflow: "auto"
+                    }}>
+                        {uploadResult.extracted_text_preview}
+                    </pre>
+                </div>
+            )}
+            {reviewResult && (
+                <div style={{
+                    marginTop: 20,
+                    padding: 16,
+                    borderRadius: 12,
+                    background: "#f8fafc",
+                    border: "1px solid #e2e8f0"
+                }}>
+                    <h4 style={{ marginTop: 0 }}>AI Review Result</h4>
+
+                    <p><strong>Prediction:</strong> {reviewResult.prediction ?? "N/A"}</p>
+                    <p><strong>Confidence:</strong> {reviewResult.confidence ?? "N/A"}</p>
+
+                    {reviewResult.summary && (
+                        <p><strong>Summary:</strong> {reviewResult.summary}</p>
+                    )}
+
+                    {Array.isArray(reviewResult.flags) && reviewResult.flags.length > 0 && (
+                        <>
+                            <p><strong>Flags:</strong></p>
+                            <ul>
+                                {reviewResult.flags.map((flag, i) => (
+                                    <li key={i}>
+                                        {typeof flag === "string"
+                                            ? flag
+                                            : JSON.stringify(flag)}
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
                 </div>
             )}
         </div>

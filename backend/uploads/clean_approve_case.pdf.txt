@@ -1,0 +1,17 @@
+TRAVEL AUTHORIZATION SUPPORTING DOCUMENT
+TRAVELER: John Smith
+DESTINATION: San Diego
+DEPART_DATE: 2026-05-10
+RETURN_DATE: 2026-05-14
+JUSTIFICATION:
+OHicial travel for required training and mission readiness support.
+Travel aligns with organizational objectives and supports ongoing operational
+requirements.
+LODGING:
+Hotel confirmed for full duration of stay.
+RENTAL CAR:
+Authorized and reserved.
+PARKING:
+Approved for duration of travel.
+NOTES:
+All required documentation is included. No discrepancies identified.

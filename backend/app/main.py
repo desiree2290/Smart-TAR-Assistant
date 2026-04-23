@@ -8,12 +8,15 @@ from .db import Base, engine
 from .api.requests import router as requests_router
 from .api.upload import router as upload_router
 from .routers.analytics import router as analytics_router
+from .api.predict import router as predict_router
 
 from pathlib import Path
 import json
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Smart TAR Review Assistant API")
+
+    
 
     app.add_middleware(
         CORSMiddleware,
@@ -28,6 +31,7 @@ def create_app() -> FastAPI:
     app.include_router(requests_router)
     app.include_router(upload_router)
     app.include_router(analytics_router)
+    app.include_router(predict_router)
 
     @app.get("/health")
     def health():

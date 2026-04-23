@@ -9,6 +9,8 @@ from app.phase3.rules import MissingRequiredFieldRule, DateOrderRule
 from app.phase3.summary_engine import SummaryEngine
 from app.phase3.models import RiskResult
 
+from app.packet_pdf import FIELD_ALIASES
+
 from app.ml_utils import run_ml_inference
 
 from app.services.ml_model import predict_justification
@@ -22,18 +24,28 @@ AIRPORT_CODES = {
     "LAX": "los angeles",
 }
 
+FIELD_ALIASES = {
+    "DESTINATION": "FLIGHT_DESTINATION",
+    "DEPART_DATE": "FLIGHT_DEPART_DATE",
+    "RETURN_DATE": "FLIGHT_RETURN_DATE",
+    "HOTEL": "HOTEL_CITY",
+    "HOTEL_CHECKIN": "HOTEL_CHECKIN_DATE",
+    "HOTEL_CHECKOUT": "HOTEL_CHECKOUT_DATE",
+    "RENTAL CAR": "RENTAL_PICKUP_CITY",
+    "PARKING": "PARKING_LOCATION",
+}
 
 # -------------------------
 # Utility helpers
 # -------------------------
 
-def _parse_iso_date(s: str) -> Optional[str]:
+
+def _parse_iso_date(s: str) -> Optional[datetime]:
     s = (s or "").strip()
     if not s:
         return None
     try:
-        datetime.strptime(s, "%Y-%m-%d")
-        return s
+        return datetime.strptime(s, "%Y-%m-%d")  # ✅ RETURN datetime
     except ValueError:
         return None
 
@@ -197,12 +209,24 @@ def _extract_packet_fields(doc_text: str) -> Dict[str, Any]:
 
     for line in (doc_text or "").splitlines():
         line = line.strip()
+
+        print(f"[DEBUG] RAW LINE: {line}")
+
         m = LABEL_RE.match(line)
         if not m:
             continue
+
         label, value = m.group(1), m.group(2).strip()
+
+        label = label.strip().upper()
+        label = FIELD_ALIASES.get(label, label)
+
+        print(f"[DEBUG] Parsed: {label} = {value}")
+
         fields[label] = value
         evidence[label] = line
+
+    print("[DEBUG] Extracted packet fields:", fields)
 
     return {"packet_fields": fields, "packet_evidence": evidence}
 
@@ -211,7 +235,9 @@ def _is_packet(doc_text: Optional[str]) -> bool:
     if not doc_text:
         return False
 
-    markers = [
+    t = doc_text.upper()
+
+    strict_markers = [
         "TAR SUPPORTING DOCUMENTS PACKET",
         "FLIGHT_DESTINATION:",
         "HOTEL_CITY:",
@@ -220,8 +246,18 @@ def _is_packet(doc_text: Optional[str]) -> bool:
         "MIE_LOCALITY:",
     ]
 
-    t = doc_text.upper()
-    return any(m in t for m in markers)
+    flexible_markers = [
+        "TRAVEL AUTHORIZATION SUPPORTING DOCUMENT",
+        "DESTINATION:",
+        "DEPART_DATE:",
+        "RETURN_DATE:",
+        "JUSTIFICATION:",
+        "LODGING:",
+        "RENTAL CAR:",
+        "PARKING:",
+    ]
+
+    return any(m in t for m in strict_markers + flexible_markers)
 
 
 # -------------------------
@@ -318,6 +354,23 @@ def _run_phase3(tar: Dict[str, Any], phase2_flags: Optional[List[Dict[str, Any]]
     summary = engine.build_summary(tar, merged_risk, flags_override=merged_flags)
     checklist = engine.build_checklist(tar, merged_risk, flags_override=merged_flags, grouped=True)
 
+    
+
+    features_used = {
+        "destination_city": tar.get("destination_city"),
+        "trip_length_days": (
+            (_parse_iso_date(tar.get("end_date")) - _parse_iso_date(tar.get("start_date"))).days
+            if tar.get("start_date") and tar.get("end_date") else None
+        ),
+        "num_flags": len(merged_flags),
+        "num_high_flags": sum(1 for f in merged_flags if f.get("severity") == "HIGH"),
+        "num_med_flags": sum(1 for f in merged_flags if f.get("severity") == "MED"),
+        "num_low_flags": sum(1 for f in merged_flags if f.get("severity") == "LOW"),
+        "justification_len": len(tar.get("justification", "")),
+        "has_packet": 1 if tar.get("packet_pdf_path") else 0,
+        "risk_score": merged_score,
+    }
+
     return {
         "risk_score": merged_score,
         "risk_level": merged_level,
@@ -325,6 +378,7 @@ def _run_phase3(tar: Dict[str, Any], phase2_flags: Optional[List[Dict[str, Any]]
         "flags": merged_flags,
         "approver_summary": summary,
         "approver_checklist": checklist,
+        "features_used": features_used,
     }
 
 

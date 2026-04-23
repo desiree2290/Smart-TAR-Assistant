@@ -39,35 +39,26 @@ def get_model_metrics():
             "random_forest": model_metrics.get("random_forest", {})
         },
         "summary": model_metrics.get("summary_metrics", {}),
+        "confusion_matrix": model_metrics.get("confusion_matrix", []),
+        "class_counts": model_metrics.get("class_counts", {}),
         "training_curves": model_metrics.get("training_curves", {})
     }
 
 @router.get("/request-stats")
-def get_request_stats(db: Session = Depends(get_db)):
-    rows = db.query(TravelRequest).all()
+def get_request_stats():
+    if not ANALYTICS_FILE.exists():
+        raise HTTPException(status_code=404, detail="analytics_data.json not found")
 
-    statuses = [str(r.status or "unknown").lower() for r in rows]
-    counts = Counter(statuses)
-
-    destination_counts = Counter(
-        str(r.destination_city or "Unknown") for r in rows
-    )
-
-    top_destinations = [
-        {"name": name, "value": count}
-        for name, count in destination_counts.most_common(5)
-    ]
+    data = json.loads(ANALYTICS_FILE.read_text(encoding="utf-8"))
+    request_stats = data.get("request_stats", {})
 
     return {
-        "total_requests": len(rows),
-        "status_counts": {
-            "submitted": counts.get("submitted", 0),
-            "approved": counts.get("approved", 0),
-            "disapproved": counts.get("disapproved", 0),
-            "kickback": counts.get("kickback", 0),
-        },
-        "top_destinations": top_destinations,
+        "total_requests": request_stats.get("total_requests", 0),
+        "status_counts": request_stats.get("status_counts", {}),
+        "top_destinations": request_stats.get("top_destinations", []),
     }
+
+
 @router.get("/flag-breakdown")
 def get_flag_breakdown(db: Session = Depends(get_db)):
     rows = db.query(AIReview).all()

@@ -3,12 +3,16 @@ import RequestForm from "../components/RequestForm.jsx";
 import UploadAttachment from "../components/UploadAttachment.jsx";
 import { createRequest, submitRequest, runDemoScenario } from "../api.js";
 import { useNavigate } from "react-router-dom";
+import ReviewPanel from "../components/ReviewPanel.jsx";
 
 
 export default function Traveler() {
     const [created, setCreated] = useState(null);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState("");
+    const [submitBusy, setSubmitBusy] = useState(false);
+    const [submitMsg, setSubmitMsg] = useState("");
+    const [reviewResult, setReviewResult] = useState(null);
     const nav = useNavigate();
 
     async function onCreate(payload) {
@@ -57,6 +61,21 @@ export default function Traveler() {
             setError("Unable to submit request for AI review.");
         } finally {
             setBusy(false);
+        }
+    }
+
+
+
+    async function onSubmitReview() {
+        try {
+            const result = await submitRequest(created.id);
+
+            console.log("submit response:", result);
+
+            setReviewResult(result.review);  
+
+        } catch (err) {
+            console.error(err);
         }
     }
 
@@ -167,18 +186,31 @@ export default function Traveler() {
                     </div>
 
                     <div style={styles.actionRow}>
-                        <button
-                            onClick={onSubmit}
-                            disabled={busy}
+                        <button 
+                            onClick={onSubmitReview}
+                            disabled={submitBusy}
                             style={{
-                                ...styles.primaryButton,
-                                opacity: busy ? 0.7 : 1,
-                                cursor: busy ? "not-allowed" : "pointer",
+                                ...styles.submitButton,
+                                opacity: submitBusy ? 0.7 : 1,
+                                cursor: submitBusy ? "not-allowed" : "pointer",
                             }}
                         >
-                            {busy ? "Submitting..." : "Submit and Run AI Review"}
+                            {submitBusy ? "Running Review..." : "Submit and Run AI Review"}
                         </button>
                     </div>
+                    {submitMsg && (
+                        <div style={{
+                            marginTop: 12,
+                            padding: 12,
+                            borderRadius: 10,
+                            background: submitMsg.includes("failed") ? "#fef2f2" : "#f8fafc",
+                            border: `1px solid ${submitMsg.includes("failed") ? "#fecaca" : "#e2e8f0"}`
+                        }}>
+                            {submitMsg}
+                        </div>
+                    )}
+
+                    {reviewResult && <ReviewPanel review={reviewResult} loading={submitBusy} />}
                 </div>
             )}
         </div>
@@ -406,5 +438,18 @@ const styles = {
         borderRadius: 8,
         cursor: "pointer",
         fontWeight: 600
-    }
+    },
+    submitButton: {
+        backgroundColor: "#0f172a",
+        color: "white",
+        border: "none",
+        padding: "10px 18px",
+        borderRadius: 8,
+        fontWeight: 600,
+        fontSize: 14,
+        cursor: "pointer",
+        transition: "all 0.2s ease",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+    },
+    
 };

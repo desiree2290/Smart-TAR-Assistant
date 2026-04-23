@@ -1,0 +1,9 @@
+TRAVEL AUTHORIZATION SUPPORTING DOCUMENT
+TRAVELER: Desiree Hodge
+DESTINATION: San Diego
+DEPART_DATE: 2026-03-13
+RETURN_DATE: 2026-03-16
+JUSTIFICATION: Conference attendance.
+LODGING: Hotel reserved but confirmation pending
+RENTAL CAR: Requested
+PARKING: Not specified

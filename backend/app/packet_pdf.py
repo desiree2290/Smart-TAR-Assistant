@@ -11,7 +11,16 @@ from reportlab.pdfgen import canvas
 
 from .settings import STORAGE_DIR
 
-
+FIELD_ALIASES = {
+    "DESTINATION": "FLIGHT_DESTINATION",
+    "DEPART_DATE": "FLIGHT_DEPART_DATE",
+    "RETURN_DATE": "FLIGHT_RETURN_DATE",
+    "HOTEL": "HOTEL_CITY",
+    "HOTEL_CHECKIN": "HOTEL_CHECKIN_DATE",
+    "HOTEL_CHECKOUT": "HOTEL_CHECKOUT_DATE",
+    "RENTAL CAR": "RENTAL_PICKUP_CITY",
+    "PARKING": "PARKING_LOCATION",
+}
 
 # ----------------------------
 # Public API

@@ -1,127 +1,127 @@
 [
   {
-    "feature": "num__risk_score",
-    "importance": 0.1403699720395891,
-    "group": "numeric"
-  },
-  {
-    "feature": "num__trip_length_days",
-    "importance": 0.11253297257303206,
-    "group": "numeric"
-  },
-  {
     "feature": "num__flag_density",
-    "importance": 0.09591056310155018,
+    "importance": 0.08775837579198212,
     "group": "numeric"
   },
   {
-    "feature": "num__num_flags",
-    "importance": 0.08016199080724441,
-    "group": "numeric"
-  },
-  {
-    "feature": "num__justification_len",
-    "importance": 0.05398329739478977,
+    "feature": "num__risk_score",
+    "importance": 0.08188930448903807,
     "group": "numeric"
   },
   {
     "feature": "num__num_high_flags",
-    "importance": 0.046664510440540895,
+    "importance": 0.07486441864608237,
     "group": "numeric"
   },
   {
-    "feature": "num__num_med_flags",
-    "importance": 0.04641830355478846,
+    "feature": "num__trip_length_days",
+    "importance": 0.0716770088200415,
     "group": "numeric"
   },
   {
-    "feature": "num__has_packet",
-    "importance": 0.041939723625098166,
-    "group": "numeric"
-  },
-  {
-    "feature": "num__num_low_flags",
-    "importance": 0.0393365485758243,
+    "feature": "num__num_flags",
+    "importance": 0.06409760692934023,
     "group": "numeric"
   },
   {
     "feature": "num__sentiment_score",
-    "importance": 0.033222951678787506,
+    "importance": 0.04209961851090713,
     "group": "numeric"
   },
   {
-    "feature": "text__travel",
-    "importance": 0.029429666543958885,
+    "feature": "num__num_low_flags",
+    "importance": 0.03189099362178947,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__num_med_flags",
+    "importance": 0.030515273888204675,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__has_packet",
+    "importance": 0.023279778843290466,
+    "group": "numeric"
+  },
+  {
+    "feature": "num__justification_len",
+    "importance": 0.02269567561094615,
+    "group": "numeric"
+  },
+  {
+    "feature": "text__high",
+    "importance": 0.019037200061404472,
     "group": "text"
   },
   {
-    "feature": "cat__destination_city_DC",
-    "importance": 0.027146964868372495,
+    "feature": "cat__destination_city_San Diego",
+    "importance": 0.01702495130353103,
+    "group": "categorical"
+  },
+  {
+    "feature": "cat__destination_city_Tampa",
+    "importance": 0.015245385632659609,
     "group": "categorical"
   },
   {
     "feature": "cat__destination_city_Norfolk",
-    "importance": 0.02488225960703909,
+    "importance": 0.013523025297381601,
     "group": "categorical"
   },
   {
-    "feature": "cat__destination_city_San Diego",
-    "importance": 0.024380122146146602,
+    "feature": "text__travel",
+    "importance": 0.011843762448508013,
+    "group": "text"
+  },
+  {
+    "feature": "cat__destination_city_Ramstein",
+    "importance": 0.01097432828163701,
     "group": "categorical"
   },
   {
-    "feature": "cat__destination_city_Tokyo",
-    "importance": 0.024006759433491624,
-    "group": "categorical"
-  },
-  {
-    "feature": "text__high",
-    "importance": 0.019403970372986825,
+    "feature": "text__additional approval",
+    "importance": 0.01039665283312913,
     "group": "text"
   },
   {
     "feature": "text__mission",
-    "importance": 0.00905741077387104,
+    "importance": 0.010138273182629125,
     "group": "text"
   },
   {
-    "feature": "text__administrative travel",
-    "importance": 0.006528209466355115,
+    "feature": "text__review",
+    "importance": 0.009957493465475628,
     "group": "text"
   },
   {
-    "feature": "text__training",
-    "importance": 0.0061765526330783424,
+    "feature": "cat__destination_city_San Jose",
+    "importance": 0.009879812855641754,
+    "group": "categorical"
+  },
+  {
+    "feature": "text__travel requires",
+    "importance": 0.009591821696984495,
     "group": "text"
   },
   {
-    "feature": "text__standard",
-    "importance": 0.006164775783257632,
+    "feature": "cat__destination_city_Colorado Springs",
+    "importance": 0.009522675656937487,
+    "group": "categorical"
+  },
+  {
+    "feature": "text__multiple",
+    "importance": 0.009430632882938723,
     "group": "text"
   },
   {
-    "feature": "text__standard training",
-    "importance": 0.004356639877978766,
+    "feature": "text__multiple discrepancies",
+    "importance": 0.008599555474981637,
     "group": "text"
   },
   {
-    "feature": "text__approval",
-    "importance": 0.004003215604940278,
-    "group": "text"
-  },
-  {
-    "feature": "text__official duties",
-    "importance": 0.003873535904102935,
-    "group": "text"
-  },
-  {
-    "feature": "text__high risk",
-    "importance": 0.0035979213683746242,
-    "group": "text"
-  },
-  {
-    "feature": "text__requires",
-    "importance": 0.003547216147122022,
-    "group": "text"
+    "feature": "cat__destination_city_Tokyo",
+    "importance": 0.008408996564141551,
+    "group": "categorical"
   }
 ]

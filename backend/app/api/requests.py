@@ -18,6 +18,7 @@ from ..review import run_review
 from ..demo_cases import get_demo_case
 
 router = APIRouter(prefix="/requests", tags=["requests"])
+UPLOAD_DIR = Path("uploads")
 
 class PacketCreate(BaseModel):
     flight_destination: str = ""
@@ -146,83 +147,59 @@ def create_packet(request_id: str, payload: PacketCreate, db: Session = Depends(
     return {"ok": True, "packet_pdf_path": str(pdf_path)}
 
 
-@router.post("/{request_id}/submit")
-def submit_request(request_id: str, db: Session = Depends(get_db)):
-    print(f"\n[SUBMIT] request_id={request_id}")
+@router.post("/{id}/submit")
+def submit_request(id: str, db: Session = Depends(get_db)):
+    req = db.query(TravelRequest).filter(TravelRequest.id == id).first()
 
-    req = db.query(TravelRequest).filter(TravelRequest.id == request_id).first()
     if not req:
-        print("[ERROR] Request not found")
         raise HTTPException(status_code=404, detail="Request not found")
 
-    print(f"[INFO] Found request: traveler={req.traveler_name}, status={req.status}")
-    print(f"[INFO] packet_pdf_path={req.packet_pdf_path}")
+    print(f"[SUBMIT] request_id={id}")
+    print(f"[SUBMIT] attachment={req.attachment.filename if req.attachment else None}")
+    print(f"[SUBMIT] packet_pdf_path={req.packet_pdf_path}")
 
-    req.status = "submitted"
-    db.commit()
+    doc_text = ""
 
-    doc_text = None
+    if req.attachment:
+        attachment_name = req.attachment.filename
+        text_path = UPLOAD_DIR / f"{attachment_name}.txt"
+        print(f"[SUBMIT] checking attachment text path: {text_path}")
+        print(f"[SUBMIT] attachment text exists? {text_path.exists()}")
 
-    if req.packet_pdf_path:
-        print(f"[INFO] Extracting text from packet PDF: {req.packet_pdf_path}")
-        doc_text = extract_pdf_text(req.packet_pdf_path, max_pages=5)
-    else:
-        attachment = db.query(Attachment).filter(Attachment.request_id == request_id).first()
-        print(f"[INFO] Attachment found? {'yes' if attachment else 'no'}")
-        if attachment:
-            print(f"[INFO] Extracting text from attachment: {attachment.file_path}")
-            doc_text = extract_pdf_text(attachment.file_path, max_pages=5)
+        if text_path.exists():
+            doc_text = text_path.read_text(encoding="utf-8")
 
-    print(f"[INFO] doc_text exists? {'yes' if doc_text else 'no'}")
-    if doc_text:
-        print("[DEBUG] doc_text preview:")
-        print(doc_text[:500])
+    if not doc_text and req.packet_pdf_path:
+        packet_path = Path(req.packet_pdf_path)
+        print(f"[SUBMIT] checking packet path: {packet_path}")
+        print(f"[SUBMIT] packet exists? {packet_path.exists()}")
+
+        if packet_path.exists():
+            doc_text = extract_pdf_text(str(packet_path))
 
     if not doc_text:
-        print("[ERROR] No supporting document text could be extracted")
         raise HTTPException(
             status_code=400,
             detail="No supporting document found. Upload attachment or generate packet before submitting."
         )
 
-    review_payload = {
+    request_payload = {
         "traveler_name": req.traveler_name,
         "destination_city": req.destination_city,
-        "start_date": req.start_date,
-        "end_date": req.end_date,
+        "start_date": str(req.start_date),
+        "end_date": str(req.end_date),
         "justification": req.justification,
     }
 
-    print("[INFO] Running review")
-    review_result = run_review(review_payload, doc_text)
-    print(f"[INFO] Review complete. flags={len(review_result.get('flags', []))}")
-    print(f"[INFO] ML result={review_result.get('ml_result')}")
+   
+    review = run_review(request_payload, doc_text)
 
-    review_row = db.query(AIReview).filter(AIReview.request_id == request_id).first()
-    if review_row:
-        print("[INFO] Updating existing AIReview row")
-        review_row.summary_text = json.dumps(review_result["summary"])
-        review_row.extracted_fields_json = json.dumps(review_result["extracted_fields"])
-        review_row.flags_json = json.dumps(review_result["flags"])
-        review_row.questions_json = json.dumps(review_result["questions"])
-        review_row.phase3_json = json.dumps(review_result["phase3"])
-        review_row.ml_json = json.dumps(review_result["ml_result"])
-    else:
-        print("[INFO] Creating new AIReview row")
-        db.add(AIReview(
-            request_id=request_id,
-            summary_text=json.dumps(review_result["summary"]),
-            extracted_fields_json=json.dumps(review_result["extracted_fields"]),
-            flags_json=json.dumps(review_result["flags"]),
-            questions_json=json.dumps(review_result["questions"]),
-            phase3_json=json.dumps(review_result["phase3"]),
-            ml_json=json.dumps(review_result["ml_result"]),
-        ))
-
-    db.commit()
-    print("[SUCCESS] Submit completed")
-    return {"ok": True, "status": "submitted"}
-
+    return {
+        "ok": True,
+        "request_id": id,
+        "status": "submitted",
+        "review": review,
+    }
 @router.get("/{request_id}/review", response_model=AIReviewOut)
 def get_review(request_id: str, db: Session = Depends(get_db)):
     row = db.query(AIReview).filter(AIReview.request_id == request_id).first()

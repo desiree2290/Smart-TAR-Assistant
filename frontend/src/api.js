@@ -27,16 +27,18 @@ export async function getRequest(id) {
 export async function uploadAttachment(id, file) {
     const form = new FormData();
     form.append("file", file);
-    const res = await fetch(`${API_BASE}/requests/${id}/attachment`, {
+
+    const res = await fetch(`${API_BASE}/files/upload/${id}`, {
         method: "POST",
         body: form,
     });
+
     if (!res.ok) throw new Error("Failed to upload attachment");
     return res.json();
 }
 
 export async function submitRequest(id) {
-    const res = await fetch(`/requests/${id}/submit`, {
+    const res = await fetch(`${API_BASE}/requests/${id}/submit`, {
         method: "POST",
     });
 
@@ -51,7 +53,7 @@ export async function submitRequest(id) {
 }
 
 export async function updateRequestStatus(id, status, comment = "") {
-    const res = await fetch(`/requests/${id}/status`, {
+    const res = await fetch(`${API_BASE}/requests/${id}/status`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -72,7 +74,7 @@ export async function getReview(id) {
 }
 
 export async function runDemoScenario(type) {
-    const res = await fetch(`/requests/demo/${type}`, {
+    const res = await fetch(`${API_BASE}/requests/demo/${type}`, {
         method: "POST",
     });
 

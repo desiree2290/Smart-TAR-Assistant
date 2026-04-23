@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-
 import {
     ResponsiveContainer,
     BarChart,
@@ -14,12 +13,119 @@ import {
     Legend,
 } from "recharts";
 
-function ConfidenceGauge({ value }) {
-    const percent = Math.round(value * 100);
+function safeJsonParse(value, fallback) {
+    if (value == null) return fallback;
+    if (typeof value !== "string") return value;
+    try {
+        return JSON.parse(value);
+    } catch {
+        return fallback;
+    }
+}
 
-    let color = "#047857"; // green
-    if (percent > 60 && percent <= 80) color = "#b45309"; // orange
-    if (percent > 80) color = "#b91c1c"; // red
+function normalizeReview(review) {
+    const safeReview = review || {};
+
+    const phase3 = safeJsonParse(safeReview.phase3_json, safeReview.phase3 || {});
+    const mlFromJson = safeJsonParse(safeReview.ml_json, {});
+    const extractedFromJson = safeJsonParse(
+        safeReview.extracted_fields_json,
+        safeReview.features_used || {}
+    );
+    const flagsFromJson = safeJsonParse(safeReview.flags_json, safeReview.flags || []);
+    const questionsFromJson = safeJsonParse(
+        safeReview.questions_json,
+        safeReview.questions || []
+    );
+
+    const mlResult = safeReview.ml_result || {};
+
+    const prediction =
+        safeReview.prediction ??
+        safeReview.ml_prediction ??
+        mlResult.ml_prediction ??
+        mlFromJson.prediction ??
+        safeReview.final_action ??
+        "n/a";
+
+    const confidence =
+        safeReview.confidence ??
+        safeReview.ml_confidence ??
+        mlResult.ml_confidence ??
+        mlFromJson.confidence ??
+        0;
+
+    const probabilitiesRaw =
+        safeReview.probabilities ??
+        mlResult.ml_probabilities ??
+        mlFromJson.probabilities ??
+        {};
+
+    let probabilities = {};
+    if (Array.isArray(probabilitiesRaw)) {
+        const labels = ["approve", "clarify", "hold"];
+        probabilities = labels.reduce((acc, label, idx) => {
+            acc[label] = Number(probabilitiesRaw[idx] || 0);
+            return acc;
+        }, {});
+    } else {
+        probabilities = probabilitiesRaw || {};
+    }
+
+    const summaryRaw =
+        safeReview.summary ??
+        safeReview.summary_text ??
+        [];
+
+    const summary = Array.isArray(summaryRaw)
+        ? summaryRaw
+        : summaryRaw
+            ? [summaryRaw]
+            : [];
+
+    const flags = Array.isArray(flagsFromJson) ? flagsFromJson : [];
+    const questions = Array.isArray(questionsFromJson) ? questionsFromJson : [];
+    const extractedFields =
+        extractedFromJson && typeof extractedFromJson === "object"
+            ? extractedFromJson
+            : {};
+
+    const finalRiskScore = phase3.risk_score ?? safeReview.risk_score ?? 0;
+    const riskLevel = phase3.risk_level ?? safeReview.risk_level ?? "unknown";
+    const finalDecision =
+        safeReview.final_action ??
+        phase3.final_action ??
+        prediction;
+
+    const decisionExplanation =
+        safeReview.decision_explanation ??
+        phase3.decision_explanation ??
+        [];
+
+    return {
+        raw: safeReview,
+        phase3,
+        mlResult,
+        prediction,
+        confidence,
+        probabilities,
+        summary,
+        flags,
+        questions,
+        extractedFields,
+        finalRiskScore,
+        riskLevel,
+        finalDecision,
+        decisionExplanation,
+    };
+}
+
+function ConfidenceGauge({ value }) {
+    const percent = Math.round((Number(value) || 0) * 100);
+
+    let color = "#047857";
+    if (percent > 60 && percent <= 80) color = "#b45309";
+    if (percent > 80) color = "#b91c1c";
 
     return (
         <div style={styles.gaugeContainer}>
@@ -28,14 +134,12 @@ function ConfidenceGauge({ value }) {
                     style={{
                         ...styles.gaugeFill,
                         width: `${percent}%`,
-                        background: color
+                        background: color,
                     }}
                 />
             </div>
 
-            <div style={styles.gaugeLabel}>
-                {percent}% confidence
-            </div>
+            <div style={styles.gaugeLabel}>{percent}% confidence</div>
         </div>
     );
 }
@@ -74,9 +178,8 @@ function DecisionBanner({ finalDecision, finalRiskScore, mlPrediction }) {
         >
             <div style={{ fontSize: 18, fontWeight: 800 }}>{title}</div>
             <div style={{ marginTop: 6, lineHeight: 1.5 }}>
-                Final decision: <b>{String(finalDecision).toUpperCase()}</b> ·
-                Risk score: <b>{finalRiskScore}</b> ·
-                ML prediction: <b>{mlPrediction}</b>
+                Final decision: <b>{String(finalDecision).toUpperCase()}</b> · Risk score:{" "}
+                <b>{finalRiskScore}</b> · ML prediction: <b>{mlPrediction}</b>
             </div>
         </div>
     );
@@ -104,7 +207,9 @@ function InsightStrip({ finalDecision, finalRiskScore, highFlagCount, mlConfiden
 
             <div style={styles.insightPill}>
                 <span style={styles.insightLabel}>Model Confidence</span>
-                <span style={styles.insightValue}>{Math.round(mlConfidence * 100)}%</span>
+                <span style={styles.insightValue}>
+                    {Math.round((Number(mlConfidence) || 0) * 100)}%
+                </span>
             </div>
         </div>
     );
@@ -113,23 +218,36 @@ function InsightStrip({ finalDecision, finalRiskScore, highFlagCount, mlConfiden
 export default function ReviewPanel({ review, loading }) {
     const [activeTab, setActiveTab] = useState("summary");
 
-    const safeReview = review || {};
-    const safeFlags = safeReview.flags || [];
-    const safePhase3 = safeReview.phase3 || {};
-    const safeMlResult = safeReview.ml_result || {};
+    const featuresUsed = review?.phase3?.features_used || {};
+    
+    const normalized = normalizeReview(review);
 
-    const ruleScore = safeFlags.length;
-    const finalRiskScore = safePhase3.risk_score ?? 0;
-    const riskLevel = safePhase3.risk_level ?? "unknown";
-    const mlPrediction = safeMlResult.ml_prediction ?? "n/a";
-    const mlConfidence = safeMlResult.ml_confidence ?? 0;
-    const finalDecision = safeReview.final_action ?? mlPrediction;
+    const {
+        raw,
+        prediction,
+        confidence,
+        probabilities,
+        summary,
+        flags,
+        questions,
+        extractedFields,
+        finalRiskScore,
+        riskLevel,
+        finalDecision,
+        decisionExplanation,
+    } = normalized;
 
-    const features = safeMlResult.ml_features_used || {};
-    const probabilities = safeMlResult.ml_probabilities || [];
-    const highFlagCount = safeFlags.filter(
-        (f) => String(f.severity || "").toUpperCase() === "HIGH"
-    ).length;
+    const ruleScore = flags.length;
+    const mlPrediction = prediction;
+    const mlConfidence = confidence;
+
+    const highFlagCount = flags.filter((f) => {
+        const sev =
+            typeof f === "object"
+                ? String(f.severity || "").toUpperCase()
+                : "";
+        return sev === "HIGH";
+    }).length;
 
     const workflowSteps = [
         "Request submitted",
@@ -141,14 +259,18 @@ export default function ReviewPanel({ review, loading }) {
 
     const severityCounts = useMemo(() => {
         const counts = { HIGH: 0, MED: 0, LOW: 0 };
-        safeFlags.forEach((f) => {
-            const sev = String(f.severity || "").toUpperCase();
+        flags.forEach((f) => {
+            const sev =
+                typeof f === "object"
+                    ? String(f.severity || "").toUpperCase()
+                    : "LOW";
+
             if (sev === "HIGH") counts.HIGH += 1;
             else if (sev === "MED" || sev === "MEDIUM") counts.MED += 1;
-            else if (sev === "LOW") counts.LOW += 1;
+            else counts.LOW += 1;
         });
         return counts;
-    }, [safeFlags]);
+    }, [flags]);
 
     if (loading) {
         return (
@@ -170,10 +292,11 @@ export default function ReviewPanel({ review, loading }) {
         );
     }
 
+
     const probabilityData = [
-        { name: "Approve", value: Number(((probabilities[0] || 0) * 100).toFixed(1)) },
-        { name: "Clarify", value: Number(((probabilities[1] || 0) * 100).toFixed(1)) },
-        { name: "Hold", value: Number(((probabilities[2] || 0) * 100).toFixed(1)) },
+        { name: "Approve", value: Number(((probabilities.approve || 0) * 100).toFixed(1)) },
+        { name: "Clarify", value: Number(((probabilities.clarify || 0) * 100).toFixed(1)) },
+        { name: "Hold", value: Number(((probabilities.hold || 0) * 100).toFixed(1)) },
     ];
 
     const severityPieData = [
@@ -196,6 +319,7 @@ export default function ReviewPanel({ review, loading }) {
                 finalRiskScore={finalRiskScore}
                 mlPrediction={mlPrediction}
             />
+
             <div style={styles.topGrid}>
                 <MetricCard
                     title="Rule Score"
@@ -216,7 +340,6 @@ export default function ReviewPanel({ review, loading }) {
                     value={finalDecision}
                     subtitle="Rules + ML decision"
                     tone={finalDecision}
-                    capitalize
                 />
 
                 <MetricCard
@@ -224,12 +347,11 @@ export default function ReviewPanel({ review, loading }) {
                     value={mlPrediction}
                     subtitle="Raw model output"
                     tone="neutral"
-                    capitalize
                 />
 
                 <MetricCard
                     title="ML Confidence"
-                    value={`${Math.round(mlConfidence * 100)}%`}
+                    value={`${Math.round((Number(mlConfidence) || 0) * 100)}%`}
                     subtitle="Classifier confidence"
                     tone="neutral"
                 />
@@ -245,6 +367,7 @@ export default function ReviewPanel({ review, loading }) {
                     </div>
                     <div style={riskBadge(riskLevel)}>{riskLevel}</div>
                 </div>
+
                 <InsightStrip
                     finalDecision={finalDecision}
                     finalRiskScore={finalRiskScore}
@@ -262,7 +385,7 @@ export default function ReviewPanel({ review, loading }) {
                     <TabButton active={activeTab === "ml"} onClick={() => setActiveTab("ml")}>
                         ML Insights
                     </TabButton>
-                    <TabButton active={activeTab === "raw"} onClick={() => setActiveTab("audit")}>
+                    <TabButton active={activeTab === "audit"} onClick={() => setActiveTab("audit")}>
                         Audit View
                     </TabButton>
                 </div>
@@ -271,22 +394,28 @@ export default function ReviewPanel({ review, loading }) {
                     <div style={styles.contentGrid}>
                         <div style={styles.sectionCard}>
                             <h4 style={styles.sectionTitle}>Summary</h4>
-                            <ul style={styles.cleanList}>
-                                {(review.summary || []).map((item, i) => (
-                                    <li key={i} style={styles.listItem}>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
+                            {summary.length > 0 ? (
+                                <ul style={styles.cleanList}>
+                                    {summary.map((item, i) => (
+                                        <li key={i} style={styles.listItem}>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <div style={styles.emptyState}>No summary available.</div>
+                            )}
                         </div>
 
                         <div style={styles.sectionCard}>
                             <h4 style={styles.sectionTitle}>Reviewer Questions</h4>
-                            {review.questions?.length ? (
+                            {questions.length ? (
                                 <ul style={styles.cleanList}>
-                                    {review.questions.map((q, i) => (
+                                    {questions.map((q, i) => (
                                         <li key={i} style={styles.listItem}>
-                                            {q}
+                                            {typeof q === "string"
+                                                ? q
+                                                : q.message || JSON.stringify(q)}
                                         </li>
                                     ))}
                                 </ul>
@@ -295,10 +424,8 @@ export default function ReviewPanel({ review, loading }) {
                             )}
                         </div>
 
-                        {/* NEW PANEL */}
                         <div style={{ ...styles.sectionCard, gridColumn: "1 / -1" }}>
                             <h4 style={styles.sectionTitle}>Review Pipeline</h4>
-
                             <div style={styles.timeline}>
                                 {workflowSteps.map((step, i) => (
                                     <div key={i} style={styles.timelineItem}>
@@ -315,28 +442,40 @@ export default function ReviewPanel({ review, loading }) {
                     <div style={styles.contentGrid}>
                         <div style={styles.sectionCard}>
                             <h4 style={styles.sectionTitle}>Flags Found</h4>
-                            {review.flags?.length ? (
+                            {flags.length ? (
                                 <div style={{ display: "grid", gap: 10 }}>
-                                    {review.flags.map((f, i) => (
-                                        <div key={i} style={styles.flagCard}>
-                                            <div style={styles.flagHeader}>
-                                                <span style={styles.flagType}>{f.type}</span>
-                                                <span style={severityBadge(f.severity)}>{f.severity}</span>
-                                            </div>
-                                            <div style={styles.flagDesc}>{f.description}</div>
-                                            {f.evidence && Object.keys(f.evidence).length > 0 && (
-                                                <div style={styles.evidenceBox}>
-                                                    <div style={styles.evidenceTitle}>Evidence</div>
-                                                    {Object.entries(f.evidence).map(([key, value]) => (
-                                                        <div key={key} style={styles.evidenceRow}>
-                                                            <div style={styles.evidenceKey}>{key}</div>
-                                                            <div style={styles.evidenceValue}>{String(value || "—")}</div>
-                                                        </div>
-                                                    ))}
+                                    {flags.map((f, i) => {
+                                        const isObject = typeof f === "object" && f !== null;
+                                        const type = isObject ? f.type || "Flag" : "Flag";
+                                        const severity = isObject ? f.severity || "LOW" : "LOW";
+                                        const description = isObject
+                                            ? f.description || f.message || JSON.stringify(f)
+                                            : String(f);
+
+                                        return (
+                                            <div key={i} style={styles.flagCard}>
+                                                <div style={styles.flagHeader}>
+                                                    <span style={styles.flagType}>{type}</span>
+                                                    <span style={severityBadge(severity)}>{severity}</span>
                                                 </div>
-                                            )}
-                                        </div>
-                                    ))}
+                                                <div style={styles.flagDesc}>{description}</div>
+
+                                                {isObject && f.evidence && Object.keys(f.evidence).length > 0 && (
+                                                    <div style={styles.evidenceBox}>
+                                                        <div style={styles.evidenceTitle}>Evidence</div>
+                                                        {Object.entries(f.evidence).map(([key, value]) => (
+                                                            <div key={key} style={styles.evidenceRow}>
+                                                                <div style={styles.evidenceKey}>{key}</div>
+                                                                <div style={styles.evidenceValue}>
+                                                                    {String(value || "—")}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             ) : (
                                 <div style={styles.goodText}>No flags ✅</div>
@@ -387,17 +526,6 @@ export default function ReviewPanel({ review, loading }) {
                             </div>
 
                             <ConfidenceGauge value={mlConfidence} />
-                            <div style={{ height: 280 }}>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={probabilityData}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" />
-                                        <YAxis unit="%" />
-                                        <Tooltip />
-                                        <Bar dataKey="value" fill="#0f172a" radius={[8, 8, 0, 0]} />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </div>
                         </div>
 
                         <div style={styles.sectionCard}>
@@ -416,26 +544,41 @@ export default function ReviewPanel({ review, loading }) {
                         </div>
 
                         <div style={{ ...styles.sectionCard, gridColumn: "1 / -1" }}>
-                            <h4 style={styles.sectionTitle}>Model Features Used</h4>
-                            <div style={styles.featureGrid}>
-                                {Object.entries(features).map(([key, value]) => (
-                                    <div key={key} style={styles.featureTile}>
-                                        <div style={styles.featureLabel}>{formatFeatureLabel(key)}</div>
-                                        <div style={styles.featureValue}>{String(value)}</div>
-                                    </div>
-                                ))}
-                            </div>
+                            <h3 style={styles.sectionTitle}>Model Features Used</h3>
+
+                            {Object.keys(featuresUsed).length > 0 ? (
+                                <div>
+                                    {Object.entries(featuresUsed).map(([key, value]) => (
+                                        <div
+                                            key={key}
+                                            style={{
+                                                padding: "6px 0",
+                                                borderBottom: "1px solid #e5e7eb",
+                                                fontSize: "13px",
+                                                color: "#334155",
+                                            }}
+                                        >
+                                            <strong>{formatLabel(key)}:</strong> {String(value)}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No feature details available.</p>
+                            )}
                         </div>
 
                         <div style={{ ...styles.sectionCard, gridColumn: "1 / -1" }}>
                             <h4 style={styles.sectionTitle}>Decision Explanation</h4>
-
                             <div style={styles.explainerBox}>
-                                {(review.decision_explanation || []).map((line, i) => (
-                                    <div key={i} style={{ marginBottom: 8 }}>
-                                        {line}
-                                    </div>
-                                ))}
+                                {Array.isArray(decisionExplanation) && decisionExplanation.length > 0 ? (
+                                    decisionExplanation.map((line, i) => (
+                                        <div key={i} style={{ marginBottom: 8 }}>
+                                            {typeof line === "string" ? line : JSON.stringify(line)}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div>No additional explanation available.</div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -444,13 +587,11 @@ export default function ReviewPanel({ review, loading }) {
                 {activeTab === "audit" && (
                     <div style={styles.sectionCard}>
                         <h4 style={styles.sectionTitle}>Review Audit Record</h4>
-
                         <div style={{ marginBottom: 12, color: "#475569" }}>
                             Full structured response returned by the AI review pipeline.
                         </div>
-
                         <pre style={styles.pre}>
-                            {JSON.stringify(review, null, 2)}
+                            {JSON.stringify(raw, null, 2)}
                         </pre>
                     </div>
                 )}
@@ -459,20 +600,29 @@ export default function ReviewPanel({ review, loading }) {
     );
 }
 
-function MetricCard({ title, value, subtitle, tone, capitalize }) {
+function MetricCard({ title, value, subtitle, tone }) {
     return (
         <div style={styles.metricCard}>
             <div style={styles.metricTitle}>{title}</div>
-            <div style={{
-                ...styles.metricValue,
-                ...metricTone(tone),
-                ...metricBackground(tone)
-            }}>
-                {value}
+            <div
+                style={{
+                    ...styles.metricValue,
+                    ...metricTone(tone),
+                    ...metricBackground(tone),
+                }}
+            >
+                {String(value)}
             </div>
             <div style={styles.metricSubtitle}>{subtitle}</div>
         </div>
     );
+}
+
+function formatLabel(input) {
+    if (!input) return "";
+    return input
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function TabButton({ active, children, onClick }) {
@@ -516,12 +666,10 @@ function riskBadge(level) {
 function metricTone(tone) {
     const t = String(tone || "").toLowerCase();
 
-    // Risk levels
     if (t === "high") return { color: "#b91c1c" };
     if (t === "medium") return { color: "#b45309" };
     if (t === "low") return { color: "#047857" };
 
-    // Decision outcomes
     if (t === "hold") return { color: "#b91c1c" };
     if (t === "clarify") return { color: "#b45309" };
     if (t === "approve") return { color: "#047857" };
@@ -546,7 +694,7 @@ function formatFeatureLabel(key) {
 const styles = {
     topGrid: {
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
         gap: 14,
     },
     metricCard: {
@@ -555,6 +703,7 @@ const styles = {
         borderRadius: 18,
         padding: 18,
         boxShadow: "0 8px 24px rgba(15, 23, 42, 0.05)",
+        minWidth: 0,
     },
     metricTitle: {
         fontSize: 13,
@@ -579,6 +728,7 @@ const styles = {
         borderRadius: 18,
         padding: 20,
         boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
+        minWidth: 0,
     },
     cardHeaderRow: {
         display: "flex",
@@ -634,6 +784,7 @@ const styles = {
         border: "1px solid #e2e8f0",
         borderRadius: 16,
         padding: 16,
+        minWidth: 0,
     },
     sectionTitle: {
         margin: "0 0 12px 0",
@@ -721,6 +872,11 @@ const styles = {
         borderRadius: 12,
         overflowX: "auto",
         fontSize: 13,
+        maxWidth: "100%",
+        width: "100%",
+        boxSizing: "border-box",
+        whiteSpace: "pre-wrap",
+        wordBreak: "break-word",
     },
     emptyState: {
         color: "#475569",
@@ -753,7 +909,6 @@ const styles = {
         color: "#475569",
         wordBreak: "break-word",
     },
-
     timeline: {
         display: "grid",
         gap: 12,
@@ -785,14 +940,13 @@ const styles = {
         color: "#1e293b",
         fontWeight: 600,
     },
-
     gaugeContainer: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         gap: 10,
+        marginTop: 18,
     },
-
     gauge: {
         width: "100%",
         height: 14,
@@ -800,24 +954,20 @@ const styles = {
         borderRadius: 999,
         overflow: "hidden",
     },
-
     gaugeFill: {
         height: "100%",
         borderRadius: 999,
     },
-
     gaugeLabel: {
         fontWeight: 700,
         color: "#334155",
     },
-
     insightStrip: {
         display: "flex",
         flexWrap: "wrap",
         gap: 10,
         marginBottom: 16,
     },
-
     insightPill: {
         display: "flex",
         alignItems: "center",
@@ -827,7 +977,6 @@ const styles = {
         borderRadius: 999,
         padding: "8px 12px",
     },
-
     insightLabel: {
         fontSize: 12,
         fontWeight: 700,
@@ -835,10 +984,16 @@ const styles = {
         textTransform: "uppercase",
         letterSpacing: 0.4,
     },
-
     insightValue: {
         fontSize: 14,
         fontWeight: 800,
         color: "#0f172a",
+    },
+    sectionCard: {
+        background: "#f8fafc",
+        border: "1px solid #e2e8f0",
+        borderRadius: 16,
+        padding: 16,
+        minWidth: 0,
     },
 };

@@ -17,12 +17,12 @@ import {
 } from "recharts";
 
 import FeatureTiles from "../components/FeatureTiles";
+import LivePredictionDemo from "../components/LivePredictionDemo";
 
 export default function Analytics() {
     
 
     const [metrics, setMetrics] = useState(null);
-    const curves = metrics?.training_curves;
     const [requestStats, setRequestStats] = useState(null);
     const [flagStats, setFlagStats] = useState(null);
     const [error, setError] = useState("");
@@ -104,13 +104,14 @@ export default function Analytics() {
         { label: "Kickback", value: requestStats.status_counts?.kickback ?? 0 },
     ];
 
-    const lossData = metrics.loss_curve || [];
-    const accuracyData = metrics.accuracy_curve || [];
+    const curves = metrics?.training_curves;
+    console.log("metrics:", metrics);
+    console.log("curves:", curves);
 
     const classDistribution = [
-        { name: "Approve", value: metrics.class_counts?.approve ?? 1000 },
-        { name: "Clarify", value: metrics.class_counts?.clarify ?? 1000 },
-        { name: "Hold", value: metrics.class_counts?.hold ?? 1000 },
+        { name: "Approve", value: metrics?.class_counts?.approve ?? 0 },
+        { name: "Clarify", value: metrics?.class_counts?.clarify ?? 0 },
+        { name: "Hold", value: metrics?.class_counts?.hold ?? 0 },
     ];
 
     const labels = ["Approve", "Clarify", "Hold"];
@@ -167,6 +168,8 @@ export default function Analytics() {
                     Model evaluation visuals and live Smart TAR workflow insights.
                 </p>
             </div>
+
+            <LivePredictionDemo />
             
             <FeatureTiles /> 
 
@@ -358,7 +361,7 @@ export default function Analytics() {
                                 <YAxis />
                                 <Tooltip />
                                 <Bar dataKey="value" fill="#0f172a" radius={[8, 8, 0, 0]}>
-                                    <LabelList dataKey="value" position="top" />
+                                    <LabelList dataKey="count" position="top" />
                                 </Bar>
                             </BarChart>
                         </ResponsiveContainer>
